@@ -264,6 +264,576 @@ reloadPageWithStoreFilter(storeParam)
 **Includes**: Age gate, store picker, smooth transitions, menu system, content switching, Divi Builder detection
 **Clean Features**: NO visual indicators, NO clutter, silent operation
 
+**COMPLETE DIVI BODY JAVASCRIPT CODE:**
+```html
+<!-- COMPLETE FINAL Club420 Code - All Fixes: Admin Bar + Auto-Redirect + Clean Interface + Custom Logos + Divi Builder -->
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  /* Age Gate & Store Picker Modals */
+  #age-gate-modal, #store-picker-modal {
+    position: fixed;
+    z-index: 9999;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    animation: fadeIn 0.5s ease-in-out;
+    padding: 1rem;
+  }
+
+  .club420-modal-box {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  }
+
+  .club420-modal-box img {
+    max-width: 150px;
+    margin-bottom: 1.5rem;
+  }
+
+  .club420-modal-box h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1.75rem;
+  }
+
+  .club420-modal-box p {
+    margin-bottom: 0.75rem;
+    color: #757576;
+  }
+
+  .club420-btn {
+    display: block;
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .club420-btn--yes {
+    background: #f2ac1d;
+    color: black;
+  }
+
+  .club420-btn--no {
+    background: #757576;
+    color: white;
+  }
+
+  .store-option {
+    display: block;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+  }
+
+  .store-option:hover {
+    border-color: #f2ac1d;
+    background: #fef7e8;
+  }
+
+  .store-option.selecting {
+    opacity: 0.6;
+    pointer-events: none;
+    border-color: #f2ac1d;
+    background: #fef7e8;
+  }
+
+  #enter-site-button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 10px;
+    background: #ccc;
+    color: white;
+    font-weight: bold;
+    cursor: not-allowed;
+    transition: background 0.3s;
+  }
+
+  /* Page transition overlay */
+  .club420-page-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #000 0%, #333 100%);
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+  
+  .club420-page-transition.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .transition-content {
+    text-align: center;
+    color: white;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .transition-logo {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  
+  .transition-logo img {
+    max-width: 70%;
+    max-height: 70%;
+    object-fit: contain;
+  }
+  
+  .logo-desktop {
+    display: block;
+  }
+  
+  .logo-mobile {
+    display: none;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .transition-logo {
+      width: 60px;
+      height: 60px;
+    }
+    
+    .logo-desktop {
+      display: none;
+    }
+    
+    .logo-mobile {
+      display: block;
+    }
+  }
+  
+  .transition-text {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  
+  .transition-subtext {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+  
+  /* Pre-transition animations */
+  .page-prepare-exit {
+    transform: scale(0.98);
+    opacity: 0.8;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  @media screen and (max-width: 480px) {
+    .club420-modal-box {
+      padding: 1.25rem;
+    }
+    .club420-modal-box h2 {
+      font-size: 1.5rem;
+    }
+    .club420-modal-box p {
+      font-size: 0.95rem;
+    }
+  }
+
+  .store-hidden {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+  }
+
+  .store-visible {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transition: opacity 0.3s ease !important;
+  }
+</style>
+
+<!-- AGE GATE MODAL -->
+<div id="age-gate-modal">
+  <div class="club420-modal-box">
+    <img src="https://dev.club420.com/wp-content/uploads/2025/05/Asset-1.png" alt="Club420 Logo">
+    <h2>Welcome to Club420</h2>
+    <p>Please verify your age and select your preferred store location</p>
+    <p>Are you 21 years or older?</p>
+    <button id="confirm-age" class="club420-btn club420-btn--yes">YES</button>
+    <button onclick="window.location.href='https://google.com'" class="club420-btn club420-btn--no">NO</button>
+  </div>
+</div>
+
+<!-- STORE PICKER MODAL -->
+<div id="store-picker-modal" style="display:none;">
+  <div class="club420-modal-box">
+    <h2>Select Your Store Location</h2>
+    <label class="store-option" data-store="davis">
+      <input type="radio" name="store" value="davis" style="margin-right: 0.75rem;">
+      <strong>Davis Store</strong>
+    </label>
+    <label class="store-option" data-store="dixon">
+      <input type="radio" name="store" value="dixon" style="margin-right: 0.75rem;">
+      <strong>Dixon Store</strong>
+    </label>
+    <button id="enter-site-button" disabled>ENTER SITE</button>
+  </div>
+</div>
+
+<!-- SMOOTH TRANSITION OVERLAY WITH CUSTOM LOGOS -->
+<div id="club420-transition" class="club420-page-transition">
+  <div class="transition-content">
+    <div class="transition-logo">
+      <img src="https://dev.club420.com/wp-content/uploads/2025/06/black_leaf_logo_desktop.png" 
+           alt="Club420 Logo" class="logo-desktop">
+      <img src="https://dev.club420.com/wp-content/uploads/2025/06/black_leaf_logo_mobile.png" 
+           alt="Club420 Logo" class="logo-mobile">
+    </div>
+    <div class="transition-text" id="transition-store-text">Switching to Davis Store</div>
+    <div class="transition-subtext">Updating your product selection...</div>
+  </div>
+</div>
+
+<script>
+  const davisID = '79043044-f024-4b70-8714-4fcad409f978';
+  const dixonID = '7029749f-9c6d-419e-b037-5c1b566f3df9';
+
+  function setStoreSmoothReload(store) {
+    const id = store === 'davis' ? davisID : dixonID;
+    const storeName = store === 'davis' ? 'Davis' : 'Dixon';
+    
+    console.log('Club420 Smooth: Switching to', storeName);
+    
+    localStorage.setItem('last-store-selected', id);
+    
+    const storePickerModal = document.getElementById('store-picker-modal');
+    if (storePickerModal && storePickerModal.style.display !== 'none') {
+      storePickerModal.style.opacity = '0';
+      storePickerModal.style.transform = 'scale(0.95)';
+      setTimeout(() => storePickerModal.style.display = 'none', 200);
+    }
+    
+    showSmoothTransition(storeName);
+    document.body.classList.add('page-prepare-exit');
+    
+    setTimeout(() => {
+      const currentUrl = new URL(window.location);
+      currentUrl.searchParams.set('store_filter', store);
+      window.location.href = currentUrl.toString();
+    }, 500);
+  }
+
+  function showSmoothTransition(storeName) {
+    const transition = document.getElementById('club420-transition');
+    const storeText = document.getElementById('transition-store-text');
+    
+    storeText.textContent = `Switching to ${storeName} Store`;
+    transition.classList.add('active');
+  }
+
+  function showStoreSectionsSmooth() {
+    const isDiviBuilder = 
+      document.body.classList.contains('et-fb') || 
+      document.body.classList.contains('et_pb_vb') || 
+      window.location.href.includes('et_fb=1') || 
+      window.location.href.includes('PageSpeed=off') || 
+      document.querySelector('.et-fb') || 
+      document.querySelector('#et_pb_vb') || 
+      document.querySelector('.et_pb_vb_overlay');
+    
+    if (isDiviBuilder) {
+      console.log('Club420: Divi Builder detected - showing ALL sections for editing');
+      
+      const allElements = document.querySelectorAll('.davis-content, .dixon-content, .davis-menu, .dixon-menu');
+      allElements.forEach(el => {
+        el.style.display = '';
+        el.style.opacity = '1';
+        el.style.visibility = 'visible';
+      });
+      
+      return;
+    }
+    
+    const store = localStorage.getItem('last-store-selected');
+    
+    const davisElements = document.querySelectorAll('.davis-content');
+    const dixonElements = document.querySelectorAll('.dixon-content');
+    const davisMenuItems = document.querySelectorAll('.davis-menu');
+    const dixonMenuItems = document.querySelectorAll('.dixon-menu');
+
+    [...davisElements, ...dixonElements].forEach(el => el.style.display = 'none');
+    [...davisMenuItems, ...dixonMenuItems].forEach(el => el.style.display = 'none');
+
+    if (store === davisID) {
+      [...davisElements, ...davisMenuItems].forEach(el => el.style.display = '');
+      console.log('Club420: Showing Davis sections (normal mode)');
+    } else if (store === dixonID) {
+      [...dixonElements, ...dixonMenuItems].forEach(el => el.style.display = '');
+      console.log('Club420: Showing Dixon sections (normal mode)');
+    }
+  }
+
+  function smoothPageEntrance() {
+    const hasAdminBar = document.body.classList.contains('admin-bar') || 
+                        document.querySelector('#wpadminbar') ||
+                        window.location.href.includes('wp-admin');
+    
+    if (hasAdminBar) {
+      console.log('Club420: WordPress admin bar detected - skipping body transform to avoid white gap');
+      
+      document.body.style.opacity = '0';
+      
+      setTimeout(() => {
+        document.body.style.transition = 'opacity 0.4s ease';
+        document.body.style.opacity = '1';
+        
+        setTimeout(() => {
+          document.body.style.transition = '';
+        }, 400);
+      }, 50);
+      
+      return;
+    }
+    
+    document.body.style.opacity = '0';
+    document.body.style.transform = 'scale(1.02)';
+    
+    setTimeout(() => {
+      document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      document.body.style.opacity = '1';
+      document.body.style.transform = 'scale(1)';
+      
+      setTimeout(() => {
+        document.body.style.transition = '';
+      }, 400);
+    }, 50);
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    smoothPageEntrance();
+    
+    const ageConfirmed = localStorage.getItem('tymber-user-has-allowed-age');
+    const selectedStore = localStorage.getItem('last-store-selected');
+    
+    const currentUrl = new URL(window.location);
+    const hasStoreFilter = currentUrl.searchParams.has('store_filter');
+    
+    if (ageConfirmed === 'true' && selectedStore && !hasStoreFilter) {
+      console.log('Club420: Store selected but URL missing filter parameter - auto-redirecting');
+      
+      const storeParam = selectedStore === davisID ? 'davis' : 'dixon';
+      currentUrl.searchParams.set('store_filter', storeParam);
+      
+      window.location.href = currentUrl.toString();
+      return;
+    }
+    
+    if (ageConfirmed === 'true') {
+      document.getElementById('age-gate-modal').style.display = 'none';
+      if (!selectedStore) {
+        document.getElementById('store-picker-modal').style.display = 'flex';
+      } else {
+        showStoreSectionsSmooth();
+      }
+    } else {
+      document.getElementById('age-gate-modal').style.display = 'flex';
+    }
+
+    document.getElementById('confirm-age').addEventListener('click', function() {
+      localStorage.setItem('tymber-user-has-allowed-age', 'true');
+      
+      const ageModal = document.getElementById('age-gate-modal');
+      ageModal.style.opacity = '0';
+      ageModal.style.transform = 'scale(0.95)';
+      setTimeout(() => ageModal.style.display = 'none', 300);
+      
+      if (!localStorage.getItem('last-store-selected')) {
+        setTimeout(() => {
+          document.getElementById('store-picker-modal').style.display = 'flex';
+        }, 300);
+      } else {
+        showStoreSectionsSmooth();
+      }
+    });
+
+    const radioButtons = document.querySelectorAll('input[name="store"]');
+    radioButtons.forEach(rb => {
+      rb.addEventListener('change', function() {
+        const btn = document.getElementById('enter-site-button');
+        btn.disabled = false;
+        btn.style.background = '#f2ac1d';
+        btn.style.cursor = 'pointer';
+        btn.onclick = function() {
+          setStoreSmoothReload(rb.value);
+        };
+      });
+    });
+  });
+
+  window.setStore = setStoreSmoothReload;
+
+  window.Club420MenuManager = {
+    storeMapping: {
+      '79043044-f024-4b70-8714-4fcad409f978': 'f-street',
+      '7029749f-9c6d-419e-b037-5c1b566f3df9': 'highway-80'
+    },
+    
+    categories: {
+      'flower': 'flower',
+      'cartridges': 'cartridge', 
+      'edibles': 'edible',
+      'prerolls': 'preroll',
+      'extract': 'extract'
+    },
+    
+    getMenuURL: function(category) {
+      const selectedStoreID = localStorage.getItem('last-store-selected');
+      const ageVerified = localStorage.getItem('tymber-user-has-allowed-age');
+      
+      if (!selectedStoreID || ageVerified !== 'true') return '/';
+      
+      const storeSlug = this.storeMapping[selectedStoreID];
+      if (!storeSlug) return '/';
+      
+      const categorySlug = this.categories[category];
+      if (!categorySlug) {
+        return 'https://club420.com/menu/' + storeSlug + '/';
+      }
+      
+      return 'https://club420.com/menu/' + storeSlug + '/categories/' + categorySlug + '/?order=-price';
+    },
+    
+    goToCategory: function(category) {
+      const url = this.getMenuURL(category);
+      console.log('Club420: Navigating to:', url);
+      window.location.href = url;
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      console.log('Club420: Hooking menu items...');
+      
+      const allLinks = document.querySelectorAll('a');
+      let hooked = 0;
+      
+      allLinks.forEach(link => {
+        const text = link.textContent.toLowerCase().trim();
+        
+        if (text === 'flower') {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            Club420MenuManager.goToCategory('flower');
+          });
+          hooked++;
+        } else if (text === 'cartridges') {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            Club420MenuManager.goToCategory('cartridges');
+          });
+          hooked++;
+        } else if (text === 'edibles') {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            Club420MenuManager.goToCategory('edibles');
+          });
+          hooked++;
+        } else if (text === 'pre-rolls' || text === 'prerolls') {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            Club420MenuManager.goToCategory('prerolls');
+          });
+          hooked++;
+        } else if (text === 'extracts' || text === 'extract') {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            Club420MenuManager.goToCategory('extract');
+          });
+          hooked++;
+        } else if (text === 'shop all' || text === 'all') {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const selectedStoreID = localStorage.getItem('last-store-selected');
+            const ageVerified = localStorage.getItem('tymber-user-has-allowed-age');
+            
+            if (!selectedStoreID || ageVerified !== 'true') {
+              window.location.href = '/';
+              return;
+            }
+            
+            const storeSlug = Club420MenuManager.storeMapping[selectedStoreID];
+            if (storeSlug) {
+              const shopAllURL = 'https://club420.com/menu/' + storeSlug + '/?order=-price';
+              window.location.href = shopAllURL;
+            }
+          });
+          hooked++;
+        }
+      });
+      
+      console.log('Club420: Hooked ' + hooked + ' menu items');
+    }, 2000);
+  });
+
+  window.addEventListener('popstate', function() {
+    setTimeout(showStoreSectionsSmooth, 100);
+  });
+
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'last-store-selected') {
+      setTimeout(showStoreSectionsSmooth, 100);
+    }
+  });
+
+  window.addEventListener('load', function() {
+    setTimeout(showStoreSectionsSmooth, 300);
+  });
+
+  console.log('Club420 Complete System Ready - FINAL VERSION (All Fixes Included)!');
+</script>
+```
+
 ### Front Page Store Dropdown (READY FOR OPTIONAL UPGRADE)
 **Location**: Front page Divi Code Module  
 **Status**: Working but could use smooth transition upgrade
