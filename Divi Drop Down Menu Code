@@ -1,0 +1,83 @@
+<div style="max-width: 350px; margin: 2rem auto;">
+  <select id="styled-store-select" style="
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+    font-size: 1.125rem;
+    font-weight: 500;
+    background: #000;
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 20px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 4 5\"><path fill=\"%23ffffff\" d=\"M2 0L0 2h4zm0 5L0 3h4z\"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 12px;
+    transition: all 0.3s ease;
+  ">
+    <option value="" style="color: #333;">Choose Store Location</option>
+    <option value="davis" style="color: #333;">Davis Store</option>
+    <option value="dixon" style="color: #333;">Dixon Store</option>
+  </select>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    const dropdown = document.getElementById('styled-store-select');
+    if (!dropdown) return;
+    
+    // Set current selection based on localStorage
+    const currentStore = localStorage.getItem('last-store-selected');
+    if (currentStore === '79043044-f024-4b70-8714-4fcad409f978') {
+      dropdown.value = 'davis';
+    } else if (currentStore === '7029749f-9c6d-419e-b037-5c1b566f3df9') {
+      dropdown.value = 'dixon';
+    }
+    
+    // Add hover effect
+    dropdown.addEventListener('mouseenter', function() {
+      this.style.borderColor = '#f2ac1d';
+      this.style.boxShadow = '0 0 15px rgba(242, 172, 29, 0.3)';
+    });
+    
+    dropdown.addEventListener('mouseleave', function() {
+      this.style.borderColor = '#fff';
+      this.style.boxShadow = 'none';
+    });
+    
+    dropdown.addEventListener('change', function() {
+      const store = this.value;
+      if (!store) return;
+      
+      console.log('Club420 Smooth Dropdown: Selected', store);
+      
+      // Use the smooth reload function
+      if (typeof setStore === 'function') {
+        setStore(store); // This will now use setStoreSmoothReload
+      } else {
+        // Fallback with smooth transition
+        console.log('setStore not available, using fallback');
+        
+        const storeId = store === 'davis' ? '79043044-f024-4b70-8714-4fcad409f978' : '7029749f-9c6d-419e-b037-5c1b566f3df9';
+        localStorage.setItem('last-store-selected', storeId);
+        
+        // Add smooth page exit
+        document.body.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        document.body.style.opacity = '0.8';
+        document.body.style.transform = 'scale(0.98)';
+        
+        setTimeout(() => {
+          const currentUrl = new URL(window.location);
+          currentUrl.searchParams.set('store_filter', store);
+          window.location.href = currentUrl.toString();
+        }, 300);
+      }
+    });
+  }, 1000);
+});
+</script>
