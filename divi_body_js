@@ -1,0 +1,657 @@
+<!-- COMPLETE Club420 System - CLEAN HTML + FIXED MODAL LOGIC -->
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  /* FIXED Modal Positioning */
+  .club420-modal {
+    position: fixed !important;
+    z-index: 999999 !important;
+    top: 0 !important; 
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: none !important; /* Start hidden */
+    justify-content: center !important;
+    align-items: center !important;
+    font-family: 'Inter', sans-serif;
+    padding: 1rem;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .club420-modal.show {
+    display: flex !important;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .club420-modal-box {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+    max-width: 420px;
+    width: 100%;
+    max-height: 90vh;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    position: relative !important;
+    z-index: 1000000 !important;
+    margin: auto !important;
+    box-sizing: border-box !important;
+    overflow-y: auto;
+  }
+
+  .club420-modal-box img {
+    max-width: 150px;
+    margin-bottom: 1.5rem;
+  }
+
+  .club420-modal-box h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1.75rem;
+  }
+
+  .club420-modal-box p {
+    margin-bottom: 0.75rem;
+    color: #757576;
+  }
+
+  .club420-btn {
+    display: block;
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .club420-btn--yes {
+    background: #f2ac1d;
+    color: black;
+  }
+
+  .club420-btn--no {
+    background: #757576;
+    color: white;
+  }
+
+  .store-option {
+    display: block;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+  }
+
+  .store-option:hover {
+    border-color: #f2ac1d;
+    background: #fef7e8;
+  }
+
+  #enter-site-button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 10px;
+    background: #ccc;
+    color: white;
+    font-weight: bold;
+    cursor: not-allowed;
+    transition: background 0.3s;
+  }
+
+  /* Page transition overlay */
+  .club420-page-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #000 0%, #333 100%);
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+  
+  .club420-page-transition.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .transition-content {
+    text-align: center;
+    color: white;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .transition-logo {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  
+  .transition-logo img {
+    max-width: 70%;
+    max-height: 70%;
+    object-fit: contain;
+  }
+  
+  .logo-desktop {
+    display: block;
+  }
+  
+  .logo-mobile {
+    display: none;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .transition-logo {
+      width: 60px;
+      height: 60px;
+    }
+    
+    .logo-desktop {
+      display: none;
+    }
+    
+    .logo-mobile {
+      display: block;
+    }
+  }
+  
+  .transition-text {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  
+  .transition-subtext {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+  
+  /* Pre-transition animations */
+  .page-prepare-exit {
+    transform: scale(0.98);
+    opacity: 0.8;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  @media screen and (max-width: 480px) {
+    .club420-modal-box {
+      padding: 1.25rem;
+    }
+    .club420-modal-box h2 {
+      font-size: 1.5rem;
+    }
+    .club420-modal-box p {
+      font-size: 0.95rem;
+    }
+  }
+
+  .store-hidden {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+  }
+
+  .store-visible {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transition: opacity 0.3s ease !important;
+  }
+</style>
+
+<!-- AGE GATE MODAL - CLEAN HTML -->
+<div id="age-gate-modal" class="club420-modal">
+  <div class="club420-modal-box">
+    <img src="https://dev.club420.com/wp-content/uploads/2025/05/Asset-1.png" alt="Club420 Logo">
+    <h2>Welcome to Club420</h2>
+    <p>Please verify your age and select your preferred store location</p>
+    <p>Are you 21 years or older?</p>
+    <button id="confirm-age" class="club420-btn club420-btn--yes">YES</button>
+    <button onclick="window.location.href='https://google.com'" class="club420-btn club420-btn--no">NO</button>
+  </div>
+</div>
+
+<!-- STORE PICKER MODAL - CLEAN HTML -->
+<div id="store-picker-modal" class="club420-modal">
+  <div class="club420-modal-box">
+    <h2>Select Your Store Location</h2>
+    <label class="store-option" data-store="davis">
+      <input type="radio" name="store" value="davis" style="margin-right: 0.75rem;">
+      <strong>Davis Store</strong>
+    </label>
+    <label class="store-option" data-store="dixon">
+      <input type="radio" name="store" value="dixon" style="margin-right: 0.75rem;">
+      <strong>Dixon Store</strong>
+    </label>
+    <button id="enter-site-button" disabled>ENTER SITE</button>
+  </div>
+</div>
+
+<!-- SMOOTH TRANSITION OVERLAY -->
+<div id="club420-transition" class="club420-page-transition">
+  <div class="transition-content">
+    <div class="transition-logo">
+      <img src="https://dev.club420.com/wp-content/uploads/2025/06/black_leaf_logo_desktop.png" 
+           alt="Club420 Logo" class="logo-desktop">
+      <img src="https://dev.club420.com/wp-content/uploads/2025/06/black_leaf_logo_mobile.png" 
+           alt="Club420 Logo" class="logo-mobile">
+    </div>
+    <div class="transition-text" id="transition-store-text">Switching to Davis Store</div>
+    <div class="transition-subtext">Updating your product selection...</div>
+  </div>
+</div>
+
+<script>
+  const davisID = '79043044-f024-4b70-8714-4fcad409f978';
+  const dixonID = '7029749f-9c6d-419e-b037-5c1b566f3df9';
+
+  // SIMPLE MODAL FUNCTIONS
+  function showModal(modalId) {
+    console.log('📱 Showing modal:', modalId);
+    
+    // Hide all modals first
+    document.querySelectorAll('.club420-modal').forEach(modal => {
+      modal.classList.remove('show');
+    });
+    
+    // Show the requested modal
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden'; // Prevent background scroll
+      console.log('✅ Modal shown:', modalId);
+    } else {
+      console.error('❌ Modal not found:', modalId);
+    }
+  }
+
+  function hideModal(modalId) {
+    console.log('📱 Hiding modal:', modalId);
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.classList.remove('show');
+      document.body.style.overflow = ''; // Restore scroll
+      console.log('✅ Modal hidden:', modalId);
+    }
+  }
+
+  function hideAllModals() {
+    document.querySelectorAll('.club420-modal').forEach(modal => {
+      modal.classList.remove('show');
+    });
+    document.body.style.overflow = '';
+  }
+
+  function setStoreSmoothReload(store) {
+    const id = store === 'davis' ? davisID : dixonID;
+    const storeName = store === 'davis' ? 'Davis' : 'Dixon';
+    
+    console.log('Club420 Smooth: Switching to', storeName);
+    
+    localStorage.setItem('last-store-selected', id);
+    hideAllModals();
+    showSmoothTransition(storeName);
+    document.body.classList.add('page-prepare-exit');
+    
+    setTimeout(() => {
+      const currentUrl = new URL(window.location);
+      currentUrl.searchParams.set('store_filter', store);
+      window.location.href = currentUrl.toString();
+    }, 500);
+  }
+
+  function showSmoothTransition(storeName) {
+    const transition = document.getElementById('club420-transition');
+    const storeText = document.getElementById('transition-store-text');
+    
+    storeText.textContent = `Switching to ${storeName} Store`;
+    transition.classList.add('active');
+  }
+
+  function showStoreSectionsSmooth() {
+    const isDiviBuilder = 
+      document.body.classList.contains('et-fb') || 
+      document.body.classList.contains('et_pb_vb') || 
+      window.location.href.includes('et_fb=1') || 
+      window.location.href.includes('PageSpeed=off') || 
+      document.querySelector('.et-fb') || 
+      document.querySelector('#et_pb_vb') || 
+      document.querySelector('.et_pb_vb_overlay');
+    
+    if (isDiviBuilder) {
+      console.log('Club420: Divi Builder detected - showing ALL sections for editing');
+      
+      const allElements = document.querySelectorAll('.davis-content, .dixon-content, .davis-menu, .dixon-menu');
+      allElements.forEach(el => {
+        el.style.display = '';
+        el.style.opacity = '1';
+        el.style.visibility = 'visible';
+      });
+      
+      return;
+    }
+    
+    const store = localStorage.getItem('last-store-selected');
+    
+    const davisElements = document.querySelectorAll('.davis-content');
+    const dixonElements = document.querySelectorAll('.dixon-content');
+    const davisMenuItems = document.querySelectorAll('.davis-menu');
+    const dixonMenuItems = document.querySelectorAll('.dixon-menu');
+
+    [...davisElements, ...dixonElements].forEach(el => el.style.display = 'none');
+    [...davisMenuItems, ...dixonMenuItems].forEach(el => el.style.display = 'none');
+
+    if (store === davisID) {
+      [...davisElements, ...davisMenuItems].forEach(el => el.style.display = '');
+      console.log('Club420: Showing Davis sections (normal mode)');
+    } else if (store === dixonID) {
+      [...dixonElements, ...dixonMenuItems].forEach(el => el.style.display = '');
+      console.log('Club420: Showing Dixon sections (normal mode)');
+    }
+  }
+
+  function smoothPageEntrance() {
+    const hasAdminBar = document.body.classList.contains('admin-bar') || 
+                        document.querySelector('#wpadminbar') ||
+                        window.location.href.includes('wp-admin');
+    
+    if (hasAdminBar) {
+      console.log('Club420: WordPress admin bar detected - skipping body transform to avoid white gap');
+      
+      document.body.style.opacity = '0';
+      
+      setTimeout(() => {
+        document.body.style.transition = 'opacity 0.4s ease';
+        document.body.style.opacity = '1';
+        
+        setTimeout(() => {
+          document.body.style.transition = '';
+        }, 400);
+      }, 50);
+      
+      return;
+    }
+    
+    document.body.style.opacity = '0';
+    document.body.style.transform = 'scale(1.02)';
+    
+    setTimeout(() => {
+      document.body.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      document.body.style.opacity = '1';
+      document.body.style.transform = 'scale(1)';
+      
+      setTimeout(() => {
+        document.body.style.transition = '';
+      }, 400);
+    }, 50);
+  }
+
+  // INITIALIZATION - CLEAN & SIMPLE
+  window.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Club420: Starting CLEAN initialization...');
+    
+    smoothPageEntrance();
+    
+    // Force clear localStorage for testing (remove after testing)
+    // localStorage.clear();
+    
+    const ageConfirmed = localStorage.getItem('tymber-user-has-allowed-age');
+    const selectedStore = localStorage.getItem('last-store-selected');
+    
+    console.log('🔍 Age confirmed:', ageConfirmed);
+    console.log('🔍 Selected store:', selectedStore);
+    
+    // Verify modals exist
+    const ageGateModal = document.getElementById('age-gate-modal');
+    const storePickerModal = document.getElementById('store-picker-modal');
+    
+    if (ageGateModal) {
+      console.log('✅ Age gate modal found');
+    } else {
+      console.error('❌ Age gate modal MISSING');
+    }
+    
+    if (storePickerModal) {
+      console.log('✅ Store picker modal found');
+    } else {
+      console.error('❌ Store picker modal MISSING');
+    }
+    
+    // Auto-redirect logic
+    const currentUrl = new URL(window.location);
+    const hasStoreFilter = currentUrl.searchParams.has('store_filter');
+    
+    if (ageConfirmed === 'true' && selectedStore && !hasStoreFilter) {
+      console.log('🔄 Auto-redirecting to add store filter');
+      const storeParam = selectedStore === davisID ? 'davis' : 'dixon';
+      currentUrl.searchParams.set('store_filter', storeParam);
+      window.location.href = currentUrl.toString();
+      return;
+    }
+    
+    // SHOW CORRECT MODAL
+    if (ageConfirmed !== 'true') {
+      console.log('🎯 Showing AGE GATE');
+      showModal('age-gate-modal');
+    } else if (!selectedStore) {
+      console.log('🏪 Showing STORE PICKER');
+      showModal('store-picker-modal');
+    } else {
+      console.log('✅ Showing CONTENT');
+      hideAllModals();
+      showStoreSectionsSmooth();
+    }
+
+    // AGE CONFIRMATION HANDLER
+    const confirmButton = document.getElementById('confirm-age');
+    if (confirmButton) {
+      confirmButton.addEventListener('click', function() {
+        console.log('👍 Age confirmed by user');
+        localStorage.setItem('tymber-user-has-allowed-age', 'true');
+        
+        hideModal('age-gate-modal');
+        
+        if (!localStorage.getItem('last-store-selected')) {
+          setTimeout(() => {
+            showModal('store-picker-modal');
+          }, 300);
+        } else {
+          showStoreSectionsSmooth();
+        }
+      });
+    }
+
+    // STORE SELECTION HANDLERS
+    const radioButtons = document.querySelectorAll('input[name="store"]');
+    radioButtons.forEach(rb => {
+      rb.addEventListener('change', function() {
+        const btn = document.getElementById('enter-site-button');
+        btn.disabled = false;
+        btn.style.background = '#f2ac1d';
+        btn.style.cursor = 'pointer';
+        btn.onclick = function() {
+          setStoreSmoothReload(rb.value);
+        };
+      });
+    });
+  });
+
+  window.setStore = setStoreSmoothReload;
+
+  // ENHANCED MENU MANAGER
+  window.Club420MenuManager = {
+    storeMapping: {
+      '79043044-f024-4b70-8714-4fcad409f978': 'f-street',
+      '7029749f-9c6d-419e-b037-5c1b566f3df9': 'highway-80'
+    },
+    
+    categories: {
+      'flower': 'flower',
+      'cartridges': 'cartridge', 
+      'edibles': 'edible',
+      'prerolls': 'preroll',
+      'extract': 'extract',
+      'wellness': 'tincture',
+      'merchandise': 'merch',
+      'shop-all': ''
+    },
+    
+    getDomain: function() {
+      const hostname = window.location.hostname;
+      if (hostname.includes('dev.')) {
+        return 'https://club420.com';
+      }
+      return 'https://club420.com';
+    },
+    
+    getMenuURL: function(category) {
+      const selectedStoreID = localStorage.getItem('last-store-selected');
+      const ageVerified = localStorage.getItem('tymber-user-has-allowed-age');
+      
+      if (!selectedStoreID || ageVerified !== 'true') return '/';
+      
+      const storeSlug = this.storeMapping[selectedStoreID];
+      if (!storeSlug) return '/';
+      
+      const categorySlug = this.categories[category];
+      const domain = this.getDomain();
+      
+      if (category === 'shop-all' || categorySlug === '') {
+        return domain + '/menu/' + storeSlug + '/?order=-price';
+      }
+      
+      if (!categorySlug) {
+        return domain + '/menu/' + storeSlug + '/';
+      }
+      
+      return domain + '/menu/' + storeSlug + '/categories/' + categorySlug + '/?order=-price';
+    },
+    
+    goToCategory: function(category) {
+      const url = this.getMenuURL(category);
+      console.log('Club420: Navigating to:', category, '→', url);
+      window.location.href = url;
+    }
+  };
+
+  // ENHANCED BLURB + TEXT MENU SUPPORT
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      console.log('Club420: Starting menu integration...');
+      
+      let hooked = 0;
+      
+      // BLURB MODULES
+      const blurbModules = document.querySelectorAll('.et_pb_blurb');
+      blurbModules.forEach(module => {
+        const categoryLinks = module.querySelectorAll('a[href^="#"]');
+        
+        if (categoryLinks.length > 0) {
+          categoryLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            const category = href.substring(1);
+            
+            if (Club420MenuManager.categories.hasOwnProperty(category)) {
+              link.addEventListener('click', function(e) {
+                e.preventDefault();
+                Club420MenuManager.goToCategory(category);
+              });
+              
+              module.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'A' && !e.target.closest('a')) {
+                  Club420MenuManager.goToCategory(category);
+                }
+              });
+              
+              module.style.cursor = 'pointer';
+              hooked++;
+            }
+          });
+        }
+      });
+      
+      // TEXT MENU LINKS
+      const allLinks = document.querySelectorAll('a');
+      allLinks.forEach(link => {
+        const text = link.textContent.toLowerCase().trim();
+        const href = link.getAttribute('href') || '';
+        
+        if (href.startsWith('#') && Club420MenuManager.categories.hasOwnProperty(href.substring(1))) {
+          return;
+        }
+        
+        if (text === 'flower' || text === 'cartridges' || text === 'edibles' || 
+            text === 'pre-rolls' || text === 'prerolls' || text === 'extracts' || 
+            text === 'extract' || text === 'wellness' || text === 'merchandise' || 
+            text === 'merch' || text === 'shop all' || text === 'all' || text === 'shop now') {
+          
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (text === 'flower') Club420MenuManager.goToCategory('flower');
+            else if (text === 'cartridges') Club420MenuManager.goToCategory('cartridges');
+            else if (text === 'edibles') Club420MenuManager.goToCategory('edibles');
+            else if (text === 'pre-rolls' || text === 'prerolls') Club420MenuManager.goToCategory('prerolls');
+            else if (text === 'extracts' || text === 'extract') Club420MenuManager.goToCategory('extract');
+            else if (text === 'wellness') Club420MenuManager.goToCategory('wellness');
+            else if (text === 'merchandise' || text === 'merch') Club420MenuManager.goToCategory('merchandise');
+            else if (text === 'shop all' || text === 'all' || text === 'shop now') Club420MenuManager.goToCategory('shop-all');
+          });
+          hooked++;
+        }
+      });
+      
+      console.log('Club420: Hooked', hooked, 'menu elements');
+      
+    }, 3000);
+  });
+
+  window.addEventListener('popstate', function() {
+    setTimeout(showStoreSectionsSmooth, 100);
+  });
+
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'last-store-selected') {
+      setTimeout(showStoreSectionsSmooth, 100);
+    }
+  });
+
+  window.addEventListener('load', function() {
+    setTimeout(showStoreSectionsSmooth, 300);
+  });
+
+  console.log('Club420 Complete System Ready - CLEAN VERSION! 🎯🍃');
+</script>
