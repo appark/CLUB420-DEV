@@ -1,1 +1,44 @@
 
+// Club420 Carousel Store Filter - Future-Proof Implementation
+// This filters ALL WooCommerce products by store location
+
+add_filter('woocommerce_shortcode_products_query', 'club420_filter_carousel_by_store', 10, 2);
+
+function club420_filter_carousel_by_store($args, $atts) {
+    // Get store from JavaScript-passed parameter
+    $store_location = isset($_GET['store_filter']) ? sanitize_text_field($_GET['store_filter']) : 'all';
+    
+    // Only filter if a specific store is selected
+    if ($store_location !== 'all') {
+        // Determine which custom field to check based on store
+        $meta_key = ($store_location === 'davis') ? '_club420_davis_url' : '_club420_dixon_url';
+        
+        // Initialize meta_query if it doesn't exist
+        if (!isset($args['meta_query'])) {
+            $args['meta_query'] = array();
+        }
+        
+        // Add store filter to meta query
+        $args['meta_query'][] = array(
+            'key' => $meta_key,
+            'value' => '',
+            'compare' => '!='
+        );
+        
+        // Debug logging (remove after testing)
+        error_log("Club420: Filtering products for store: " . $store_location . " using meta_key: " . $meta_key);
+    }
+    
+    return $args;
+}
+
+// Add nonce to frontend for security
+add_action('wp_footer', 'club420_add_carousel_nonce');
+
+function club420_add_carousel_nonce() {
+    if (!is_admin()) {
+        echo '<script>
+        window.club420CarouselNonce = "' . wp_create_nonce('club420_carousel_nonce') . '";
+        </script>';
+    }
+}
