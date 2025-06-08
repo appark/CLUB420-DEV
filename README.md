@@ -1739,3 +1739,594 @@ function setupCSRF() {
                 const cookie = cookies[i].trim();
                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
                     cookieValue = decodeURIComponent(cookie.substring(
+
+
+
+# Troubleshooting Guide and Verification Procedures
+
+## Common Issues and Solutions
+
+### **Issue 1: Static Files Not Loading (CSS 404 Errors)**
+
+**Symptoms:**
+- Website appears unstyled
+- Browser console shows 404 errors for CSS files
+- `/static/` URLs returning "Not Found"
+
+**Diagnosis:**
+```bash
+# Check if staticfiles directory exists
+ls -la /opt/reservations/demo2/staticfiles/
+
+# Check if static files are being served
+curl -I http://localhost:3001/static/assets/css/style.css
+
+# Check Django static file settings
+docker compose exec web python manage.py shell -c "from django.conf import settings; print('STATIC_URL:', settings.STATIC_URL); print('STATIC_ROOT:', settings.STATIC_ROOT)"
+```
+
+**Solutions:**
+```bash
+# Create staticfiles directory if missing
+mkdir -p /opt/reservations/demo2/staticfiles
+
+# Collect static files
+docker compose exec web python manage.py collectstatic --noinput
+
+# Copy from working demo if available
+cp -r /opt/reservations/demo/app/staticfiles/* /opt/reservations/demo2/staticfiles/ 2>/dev/null || echo "No source files"
+
+# Restart containers
+docker compose restart web
+
+# Verify WhiteNoise is in MIDDLEWARE
+docker compose exec web python -c "from demo2.settings import MIDDLEWARE; print('WhiteNoise installed:', 'whitenoise.middleware.WhiteNoiseMiddleware' in MIDDLEWARE)"
+```
+
+---
+
+### **Issue 2: Authentication Errors (is_authenticated TypeError)**
+
+**Symptoms:**
+- `TypeError: 'bool' object is not callable`
+- Pages requiring authentication throwing 500 errors
+- Login redirects not working
+
+**Diagnosis:**
+```bash
+# Search for old authentication syntax
+docker compose exec web grep -r "is_authenticated()" reservations/ --include="*.py"
+
+# Check for force_unicode usage
+docker compose exec web grep -r "force_unicode" reservations/ --include="*.py"
+```
+
+**Solutions:**
+```bash
+# Fix authentication calls in decorators
+docker compose exec web sed -i 's/request\.user\.is_authenticated()/request.user.is_authenticated/g' reservations/decorators/auth.py
+
+# Fix authentication calls in utils
+docker compose exec web sed -i 's/request\.user\.is_authenticated()/request.user.is_authenticated/g' reservations/utils.py
+
+# Fix force_unicode imports
+docker compose exec web sed -i 's/from django.utils.encoding import force_unicode/from django.utils.encoding import force_str/g' reservations/utils.py
+docker compose exec web sed -i 's/force_unicode(/force_str(/g' reservations/utils.py
+
+# Restart container
+docker compose restart web
+```
+
+---
+
+### **Issue 3: Time Field Validation Errors**
+
+**Symptoms:**
+- "Please fill out both the start and end time!" error
+- "Enter a valid time." validation errors
+- Time picker widget not accepting 12-hour or 24-hour formats
+
+**Diagnosis:**
+```bash
+# Check form field requirements
+docker compose exec web grep -A 5 -B 5 "required=False\|required=True" reservations/forms/fields.py
+
+# Test time format acceptance
+docker compose exec web python manage.py shell << 'EOF'
+from django import forms
+field = forms.TimeField()
+try:
+    print("24-hour test:", field.clean("14:30"))
+    print("12-hour test:", field.clean("2:30 PM"))
+except Exception as e:
+    print("Error:", e)
+EOF
+```
+
+**Solutions:**
+```bash
+# Fix form field requirements
+docker compose exec web sed -i 's/required=False/required=True/g' reservations/forms/fields.py
+
+# Verify TIME_INPUT_FORMATS in settings
+docker compose exec web python -c "
+from django.conf import settings
+formats = getattr(settings, 'TIME_INPUT_FORMATS', [])
+print('Time formats configured:', len(formats))
+for f in formats:
+    print('  -', f)
+"
+
+# Restart container
+docker compose restart web
+```
+
+---
+
+### **Issue 4: Team Assignment Interface Not Working**
+
+**Symptoms:**
+- "Click here to add some" not responsive
+- Select2 dropdown not appearing
+- Teams can be selected but don't persist after page refresh
+- CSRF 403 errors in browser console
+
+**Diagnosis:**
+```bash
+# Check JavaScript console in browser for errors
+# Look for Select2 initialization issues
+# Check for CSRF token problems
+
+# Verify API endpoints exist
+docker compose exec web grep -r "api_field_modify_teams" reservations/
+
+# Check CSRF configuration
+docker compose exec web python -c "
+from django.conf import settings
+print('CSRF_COOKIE_HTTPONLY:', getattr(settings, 'CSRF_COOKIE_HTTPONLY', 'Not set'))
+print('CSRF_TRUSTED_ORIGINS:', getattr(settings, 'CSRF_TRUSTED_ORIGINS', 'Not set'))
+"
+```
+
+**Solutions:**
+```bash
+# Apply JavaScript fix for Select2 compatibility
+cat > /tmp/select2_fix.js << 'EOF'
+// Django 5.2 Select2 Fix for Team Assignment
+$(document).ready(function() {
+    console.log("Loading Django 5.2 Select2 fix...");
+    
+    $(".form-dynamic-select").off("change");
+    $(".form-dynamic-select").on("change", "select", function() {
+        console.log('Select2 changed - submitting form');
+        var $form = $(this).closest("form");
+        
+        $.ajax({
+            type: "POST",
+            url: $form.attr("action"),
+            data: $form.serialize(),
+            dataType: "json",
+            headers: {
+                'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(response) {
+                console.log("Team assignment successful:", response);
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.log("Team assignment error:", xhr.status, xhr.responseText);
+                if (xhr.status === 200) {
+                    console.log("Success despite error status - reloading page");
+                    location.reload();
+                }
+            }
+        });
+    });
+});
+EOF
+
+# Apply the fix
+docker compose cp /tmp/select2_fix.js web:/tmp/select2_fix.js
+docker compose exec web sh -c "cat /tmp/select2_fix.js >> static/assets/js/scripts.js"
+docker compose exec web python manage.py collectstatic --noinput
+docker compose restart web
+rm /tmp/select2_fix.js
+```
+
+---
+
+### **Issue 5: Sidebar Login/Logout Display Problems**
+
+**Symptoms:**
+- Both login and logout buttons showing simultaneously
+- Logout button not appearing when authenticated
+- Login button not appearing when not authenticated
+- Duplicate buttons in sidebar
+
+**Diagnosis:**
+```bash
+# Check sidebar template structure
+docker compose exec web grep -A 20 -B 5 "logout\|login" templates/reservations/layouts/sidebar.html
+
+# Check context processor
+docker compose exec web python -c "
+from reservations.context.auth import auth_context
+from django.test import RequestFactory
+factory = RequestFactory()
+request = factory.get('/')
+print('Context keys:', list(auth_context(request).keys()))
+"
+```
+
+**Solutions:**
+```bash
+# Check template structure - should have proper if/else/endif
+# Correct structure should be:
+# {% if is_authenticated %}
+#     <logout button>
+# {% else %}
+#     <login button>  
+# {% endif %}
+
+# Manual template inspection and fix needed
+docker compose exec web vi templates/reservations/layouts/sidebar.html
+
+# Verify context processor is working
+docker compose exec web python manage.py shell -c "
+from django.template.context_processors import auth
+print('Django auth context processor available')
+"
+```
+
+---
+
+### **Issue 6: Logout HTTP 405 Error**
+
+**Symptoms:**
+- Clicking logout button gives "Method Not Allowed" error
+- URL `/accounts/logout/` returns 405 error
+- User stays logged in after clicking logout
+
+**Diagnosis:**
+```bash
+# Test logout URL directly
+curl -I http://localhost:3001/accounts/logout/
+
+# Check if logout URL pattern exists
+docker compose exec web grep -n "logout" reservations/urls.py
+
+# Check if logout_user view exists
+docker compose exec web grep -r "logout_user" reservations/views/
+```
+
+**Solutions:**
+```bash
+# Add logout URL pattern to urls.py
+docker compose exec web python -c "
+import os
+with open('reservations/urls.py', 'r') as f:
+    content = f.read()
+    
+if 'accounts/logout' not in content:
+    print('Adding logout URL pattern...')
+    # Add the pattern after login pattern
+    content = content.replace(
+        're_path(r\"^accounts/login/$\", views.login_user, name=\"login\"),',
+        're_path(r\"^accounts/login/$\", views.login_user, name=\"login\"),\n    re_path(r\"^accounts/logout/$\", views.logout_user, name=\"logout\"),'
+    )
+    with open('reservations/urls.py', 'w') as f:
+        f.write(content)
+    print('Logout URL pattern added')
+else:
+    print('Logout URL pattern already exists')
+"
+
+# Restart container
+docker compose restart web
+
+# Test logout functionality
+curl -I http://localhost:3001/accounts/logout/
+```
+
+---
+
+### **Issue 7: Database Connection Errors**
+
+**Symptoms:**
+- "Could not connect to server" errors
+- Django can't migrate database
+- 500 errors on all pages
+
+**Diagnosis:**
+```bash
+# Check container status
+docker compose ps
+
+# Check database logs
+docker compose logs db --tail=20
+
+# Test database connection
+docker compose exec db psql -U postgres demo2 -c "SELECT current_database();"
+
+# Check Django database settings
+docker compose exec web python manage.py check --database default
+```
+
+**Solutions:**
+```bash
+# Restart database container
+docker compose restart db
+
+# Wait for database to be ready
+sleep 10
+
+# Run migrations
+docker compose exec web python manage.py migrate
+
+# Create superuser if needed
+docker compose exec web python manage.py createsuperuser --noinput --username admin --email admin@example.com || echo "Superuser already exists"
+
+# Test connection
+docker compose exec web python manage.py shell -c "from django.db import connection; cursor = connection.cursor(); cursor.execute('SELECT 1'); print('Database connected:', cursor.fetchone())"
+```
+
+---
+
+## Verification Procedures
+
+### **Complete System Verification**
+
+```bash
+#!/bin/bash
+echo "=== Demo2 System Verification ==="
+echo "Date: $(date)"
+echo
+
+# 1. Container Health Check
+echo "1. Container Status:"
+docker compose ps
+echo
+
+# 2. Django Version Verification
+echo "2. Django Version:"
+docker compose exec web python -c "import django; print('Django version:', django.get_version())"
+echo
+
+# 3. Database Connectivity
+echo "3. Database Connection:"
+docker compose exec web python manage.py shell -c "
+from django.db import connection
+cursor = connection.cursor()
+cursor.execute('SELECT version()')
+print('PostgreSQL version:', cursor.fetchone()[0][:50])
+cursor.execute('SELECT current_database(), current_user')
+db_info = cursor.fetchone()
+print(f'Connected to: {db_info[0]} as {db_info[1]}')
+"
+echo
+
+# 4. Static Files Check
+echo "4. Static Files:"
+STATIC_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/static/assets/css/style.css)
+echo "CSS file response: $STATIC_RESPONSE"
+echo
+
+# 5. Authentication URLs
+echo "5. Authentication URLs:"
+LOGIN_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/accounts/login/)
+LOGOUT_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/accounts/logout/)
+echo "Login URL response: $LOGIN_RESPONSE"
+echo "Logout URL response: $LOGOUT_RESPONSE"
+echo
+
+# 6. Admin Interface
+echo "6. Admin Interface:"
+ADMIN_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/admin/)
+echo "Admin interface response: $ADMIN_RESPONSE"
+echo
+
+# 7. Time Format Testing
+echo "7. Time Format Testing:"
+docker compose exec web python manage.py shell -c "
+from django import forms
+field = forms.TimeField()
+from django.conf import settings
+
+print('TIME_INPUT_FORMATS configured:', len(getattr(settings, 'TIME_INPUT_FORMATS', [])))
+
+try:
+    result1 = field.clean('14:30')
+    print('24-hour format (14:30): ✓ Success -', result1)
+except Exception as e:
+    print('24-hour format (14:30): ✗ Error -', e)
+
+try:
+    result2 = field.clean('2:30 PM')
+    print('12-hour format (2:30 PM): ✓ Success -', result2)
+except Exception as e:
+    print('12-hour format (2:30 PM): ✗ Error -', e)
+"
+echo
+
+# 8. WebsiteSetting Database Check
+echo "8. Website Settings:"
+docker compose exec web python manage.py shell -c "
+from reservations.models import WebsiteSetting
+count = WebsiteSetting.objects.count()
+print(f'WebsiteSetting records: {count}')
+
+site_name = WebsiteSetting.objects.filter(key='SITE_NAME').first()
+if site_name:
+    print(f'Site name: {site_name.value}')
+else:
+    print('Site name: Not configured')
+
+email_host = WebsiteSetting.objects.filter(key='EMAIL_HOST').first()
+if email_host:
+    print(f'Email host: {email_host.value}')
+else:
+    print('Email host: Not configured')
+"
+echo
+
+# 9. Context Processors Check
+echo "9. Context Processors:"
+docker compose exec web python -c "
+from django.conf import settings
+templates = settings.TEMPLATES[0]['OPTIONS']['context_processors']
+auth_context = 'reservations.context.auth.auth_context' in templates
+site_context = 'reservations.context.navigation.site_context' in templates
+print('Auth context processor:', '✓' if auth_context else '✗')
+print('Site context processor:', '✓' if site_context else '✗')
+"
+echo
+
+# 10. CSRF Configuration
+echo "10. CSRF Configuration:"
+docker compose exec web python -c "
+from django.conf import settings
+print('CSRF_COOKIE_HTTPONLY:', getattr(settings, 'CSRF_COOKIE_HTTPONLY', 'Not set'))
+print('CSRF_TRUSTED_ORIGINS count:', len(getattr(settings, 'CSRF_TRUSTED_ORIGINS', [])))
+"
+echo
+
+# 11. Memory Usage
+echo "11. Resource Usage:"
+docker stats demo2-web demo2-db --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.MemPerc}}"
+echo
+
+echo "=== Verification Complete ==="
+```
+
+### **Quick Health Check Script**
+
+```bash
+#!/bin/bash
+# Quick health check for Demo2 system
+
+echo "Demo2 Quick Health Check - $(date)"
+
+# Test main application URL
+MAIN_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/)
+echo "Main page: $MAIN_RESPONSE"
+
+# Test admin URL  
+ADMIN_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/admin/)
+echo "Admin page: $ADMIN_RESPONSE"
+
+# Test static files
+STATIC_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/static/assets/css/style.css)
+echo "CSS static: $STATIC_RESPONSE"
+
+# Container status
+CONTAINERS=$(docker compose ps --format json | jq -r '.State' | tr '\n' ' ')
+echo "Containers: $CONTAINERS"
+
+# Database connection
+DB_STATUS=$(docker compose exec web python manage.py shell -c "from django.db import connection; connection.ensure_connection(); print('OK')" 2>/dev/null || echo "ERROR")
+echo "Database: $DB_STATUS"
+
+echo "Health check complete"
+```
+
+### **Performance Verification**
+
+```bash
+#!/bin/bash
+echo "=== Performance Verification ==="
+
+# Response time testing
+echo "Response Time Tests:"
+for url in "/" "/admin/" "/accounts/login/"; do
+    RESPONSE_TIME=$(curl -s -o /dev/null -w "%{time_total}" "http://localhost:3001$url")
+    echo "  $url: ${RESPONSE_TIME}s"
+done
+
+# Database query performance
+echo "Database Performance:"
+docker compose exec web python manage.py shell -c "
+import time
+from django.db import connection
+from reservations.models import Field, TimeSlot, Reservation
+
+start_time = time.time()
+field_count = Field.objects.count()
+timeslot_count = TimeSlot.objects.count() 
+reservation_count = Reservation.objects.count()
+query_time = time.time() - start_time
+
+print(f'Fields: {field_count}')
+print(f'TimeSlots: {timeslot_count}') 
+print(f'Reservations: {reservation_count}')
+print(f'Query time: {query_time:.3f}s')
+print(f'Total queries: {len(connection.queries)}')
+"
+
+# Static file serving performance
+echo "Static File Performance:"
+STATIC_TIME=$(curl -s -o /dev/null -w "%{time_total}" "http://localhost:3001/static/assets/js/scripts.js")
+echo "  JavaScript load time: ${STATIC_TIME}s"
+
+echo "Performance verification complete"
+```
+
+### **Functionality Testing Checklist**
+
+Create this as a manual testing checklist:
+
+**✅ Authentication & Authorization**
+- [ ] Login page loads and accepts credentials
+- [ ] Logout button appears when authenticated  
+- [ ] Logout button successfully logs out user
+- [ ] Sidebar shows correct items based on auth status
+- [ ] Admin pages require authentication
+- [ ] Non-admin users cannot access admin functions
+
+**✅ User Interface**
+- [ ] All CSS styles loading correctly
+- [ ] JavaScript functionality working
+- [ ] Sidebar toggle button works
+- [ ] Navigation links all functional
+- [ ] Forms display properly
+- [ ] Error messages display correctly
+
+**✅ Time Management**
+- [ ] Time slots can be created with 12-hour format (2:30 PM)
+- [ ] Time slots can be created with 24-hour format (14:30)
+- [ ] Time displays show consistent "5:00 PM" format
+- [ ] Start time must be before end time validation
+- [ ] Time picker accepts various input formats
+
+**✅ Team Assignment**
+- [ ] Team assignment interface loads
+- [ ] Teams can be selected from dropdown
+- [ ] Team assignments persist after page refresh
+- [ ] Multiple teams can be assigned to one field
+- [ ] Team assignments can be removed
+
+**✅ Database Operations**
+- [ ] Records can be created in all models
+- [ ] Records can be edited through admin interface
+- [ ] Records can be deleted with proper confirmation
+- [ ] Search functionality works in admin
+- [ ] Filtering works in admin list views
+
+**✅ Website Settings**
+- [ ] Website settings page accessible to admin
+- [ ] Site name can be changed and appears in sidebar
+- [ ] Email settings can be configured
+- [ ] Settings persist after container restart
+- [ ] Database-driven configuration working
+
+**✅ API Endpoints**
+- [ ] Team assignment API responds correctly
+- [ ] Calendar API accessible
+- [ ] CSRF tokens working with AJAX requests
+- [ ] JSON responses formatted correctly
+
+**✅ Error Handling**
+- [ ] 404 pages display correctly
+- [ ] 403 permission errors handled
+- [ ] 500 server errors logged properly
+- [ ] Form validation errors displayed clearly
+- [ ] Database connection errors handled gracefully
