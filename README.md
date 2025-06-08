@@ -1018,3 +1018,724 @@ SESSION_COOKIE_SAMESITE = 'Strict'
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 ```
+# Complete Code Reference
+
+## Docker Configuration
+
+### **docker-compose.yml**
+```yaml
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: demo2-web
+    ports:
+      - "3001:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/demo2
+    command: python manage.py runserver 0.0.0.0:8000
+
+  db:
+    image: postgres:15
+    container_name: demo2-db
+    environment:
+      POSTGRES_DB: demo2
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+volumes:
+  postgres_data:
+```
+
+### **Dockerfile**
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy project
+COPY . .
+
+# Collect static files
+RUN python manage.py collectstatic --noinput || true
+
+EXPOSE 8000
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+```
+
+---
+
+## Core Django Files
+
+### **demo2/settings.py**
+```python
+import os
+from pathlib import Path
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Security settings
+SECRET_KEY = 'your-secret-key-here'
+DEBUG = True
+ALLOWED_HOSTS = ['*']
+
+# Application definition
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'reservations',
+]
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+ROOT_URLCONF = 'demo2.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'reservations.context.auth.auth_context',
+                'reservations.context.navigation.site_context',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'demo2.wsgi.application'
+
+# Database configuration
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'demo2',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'db',
+        'PORT': '5432',
+    }
+}
+
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+# Internationalization
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_TZ = True
+
+# Static files configuration
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Login/Logout Configuration
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Time Format Configuration
+TIME_INPUT_FORMATS = [
+    '%H:%M:%S',      # 14:30:00
+    '%H:%M:%S.%f',   # 14:30:00.000000  
+    '%H:%M',         # 14:30
+    '%I:%M %p',      # 2:30 PM
+    '%I:%M:%S %p',   # 2:30:00 PM
+]
+
+# CSRF Configuration for Django 5.2
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = False
+CSRF_TRUSTED_ORIGINS = [
+    'https://demo2.ischeduleyou.com',
+    'http://demo2.ischeduleyou.com',
+    'http://localhost:8000',
+    'http://localhost:3001',
+]
+
+# Email configuration (reads from database)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# REST Framework configuration
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
+```
+
+### **demo2/urls.py**
+```python
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('reservations.urls')),
+]
+```
+
+---
+
+## Models (Key Components)
+
+### **reservations/models.py (Core Models)**
+```python
+from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
+
+class WebsiteSetting(models.Model):
+    key = models.CharField(max_length=255, unique=True)
+    description = models.CharField(max_length=500)
+    value = models.CharField(max_length=1000)
+    
+    def __str__(self):
+        return f"{self.key}: {self.value}"
+    
+    class Meta:
+        verbose_name = "Website Setting"
+        verbose_name_plural = "Website Settings"
+
+class GameType(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    
+    def __str__(self):
+        return self.name
+
+class Field(models.Model):
+    name = models.CharField(max_length=100)
+    location = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    active = models.BooleanField(default=True)
+    teams = models.ManyToManyField(User, blank=True, related_name='allowed_fields')
+    
+    def __str__(self):
+        return self.name
+
+class TimeSlot(models.Model):
+    field = models.ForeignKey(Field, on_delete=models.CASCADE)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    active = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return "{} - {} @ {}".format(
+            self.start_time.strftime("%I:%M %p").upper(),
+            self.end_time.strftime("%I:%M %p").upper(),
+            self.field.name
+        )
+    
+    class Meta:
+        ordering = ['start_time']
+
+class Reservation(models.Model):
+    field = models.ForeignKey(Field, on_delete=models.CASCADE)
+    timeslot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True)
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.field.name} on {self.date}"
+    
+    class Meta:
+        unique_together = ('field', 'timeslot', 'date')
+        ordering = ['-date', '-created_at']
+
+class TeamProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    team_name = models.CharField(max_length=100)
+    contact_email = models.EmailField()
+    phone_number = models.CharField(max_length=20, blank=True)
+    
+    def __str__(self):
+        return self.team_name
+
+class ManagerProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    department = models.CharField(max_length=100)
+    contact_email = models.EmailField()
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.department}"
+
+class Tournament(models.Model):
+    name = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    fields = models.ManyToManyField(Field, blank=True)
+    game_type = models.ForeignKey(GameType, on_delete=models.CASCADE)
+    description = models.TextField(blank=True)
+    
+    def __str__(self):
+        return self.name
+```
+
+---
+
+## Utils and Helper Functions
+
+### **reservations/utils.py**
+```python
+from django.utils.encoding import force_str
+from reservations.models import WebsiteSetting
+
+def get_website_setting(key, default_value=''):
+    """
+    Get a website setting value from the database
+    """
+    try:
+        setting = WebsiteSetting.objects.get(key=key)
+        return setting.value
+    except WebsiteSetting.DoesNotExist:
+        return default_value
+
+def set_website_setting(key, value):
+    """
+    Set a website setting value in the database
+    """
+    setting, created = WebsiteSetting.objects.get_or_create(
+        key=key,
+        defaults={'value': value, 'description': f'Setting for {key}'}
+    )
+    if not created:
+        setting.value = value
+        setting.save()
+    return setting
+
+def format_time_display(time_obj):
+    """
+    Format time object for consistent display
+    """
+    if time_obj:
+        return time_obj.strftime("%I:%M %p").upper()
+    return ""
+
+def is_user_authenticated(request):
+    """
+    Check if user is authenticated (Django 5.2 compatible)
+    """
+    return hasattr(request, 'user') and request.user.is_authenticated
+
+def get_user_permissions(user):
+    """
+    Get user permission level
+    """
+    if not user.is_authenticated:
+        return 'anonymous'
+    
+    if user.is_superuser:
+        return 'superuser'
+    
+    if user.is_staff:
+        return 'staff'
+    
+    # Check for team or manager profile
+    try:
+        from reservations.models import TeamProfile, ManagerProfile
+        
+        if hasattr(user, 'teamprofile'):
+            return 'team'
+        
+        if hasattr(user, 'managerprofile'):
+            return 'manager'
+            
+    except ImportError:
+        pass
+    
+    return 'user'
+```
+
+---
+
+## Forms
+
+### **reservations/forms/fields.py**
+```python
+from django import forms
+from reservations.models import Field, TimeSlot, GameType
+
+class TimeSlotForm(forms.Form):
+    start_time = forms.TimeField(
+        required=True,
+        input_formats=[
+            '%H:%M:%S', '%H:%M:%S.%f', '%H:%M',  # 24-hour formats
+            '%I:%M %p', '%I:%M:%S %p'            # 12-hour formats
+        ],
+        widget=forms.TimeInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'e.g., 2:30 PM or 14:30'
+        }),
+        error_messages={
+            'required': "Please provide a start time!",
+            'invalid': "Please enter a valid time format (e.g., 2:30 PM or 14:30)!"
+        }
+    )
+    
+    end_time = forms.TimeField(
+        required=True,
+        input_formats=[
+            '%H:%M:%S', '%H:%M:%S.%f', '%H:%M',  # 24-hour formats
+            '%I:%M %p', '%I:%M:%S %p'            # 12-hour formats
+        ],
+        widget=forms.TimeInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'e.g., 3:30 PM or 15:30'
+        }),
+        error_messages={
+            'required': "Please provide an end time!",
+            'invalid': "Please enter a valid time format (e.g., 3:30 PM or 15:30)!"
+        }
+    )
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        start_time = cleaned_data.get('start_time')
+        end_time = cleaned_data.get('end_time')
+        
+        if start_time and end_time:
+            if start_time >= end_time:
+                raise forms.ValidationError("End time must be after start time!")
+        
+        return cleaned_data
+
+class FieldForm(forms.ModelForm):
+    class Meta:
+        model = Field
+        fields = ['name', 'location', 'description', 'active']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+class GameTypeForm(forms.ModelForm):
+    class Meta:
+        model = GameType
+        fields = ['name', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+```
+
+---
+
+## Admin Configuration
+
+### **reservations/admin.py**
+```python
+from django.contrib import admin
+from django.utils.html import format_html
+from reservations.models import (
+    Field, TimeSlot, Reservation, GameType, 
+    Tournament, TeamProfile, ManagerProfile, WebsiteSetting
+)
+
+@admin.register(WebsiteSetting)
+class WebsiteSettingAdmin(admin.ModelAdmin):
+    list_display = ['key', 'value', 'description']
+    search_fields = ['key', 'description']
+    list_filter = ['key']
+    ordering = ['key']
+
+@admin.register(Field)
+class FieldAdmin(admin.ModelAdmin):
+    list_display = ['name', 'location', 'active', 'team_count']
+    list_filter = ['active']
+    search_fields = ['name', 'location']
+    filter_horizontal = ['teams']
+    
+    def team_count(self, obj):
+        return obj.teams.count()
+    team_count.short_description = 'Teams Assigned'
+
+@admin.register(TimeSlot)
+class TimeSlotAdmin(admin.ModelAdmin):
+    list_display = ['field', 'start_time_formatted', 'end_time_formatted', 'active']
+    list_filter = ['field', 'active']
+    ordering = ['field', 'start_time']
+    
+    def start_time_formatted(self, obj):
+        return obj.start_time.strftime("%I:%M %p").upper()
+    start_time_formatted.short_description = 'Start Time'
+    
+    def end_time_formatted(self, obj):
+        return obj.end_time.strftime("%I:%M %p").upper()
+    end_time_formatted.short_description = 'End Time'
+
+@admin.register(Reservation)
+class ReservationAdmin(admin.ModelAdmin):
+    list_display = ['user', 'field', 'date', 'start_time_formatted', 'end_time_formatted', 'created_at']
+    list_filter = ['field', 'date', 'created_at']
+    search_fields = ['user__username', 'user__email', 'field__name']
+    date_hierarchy = 'date'
+    ordering = ['-date', '-created_at']
+    
+    def start_time_formatted(self, obj):
+        return obj.timeslot.start_time.strftime("%I:%M %p").upper()
+    start_time_formatted.short_description = 'Start Time'
+    
+    def end_time_formatted(self, obj):
+        return obj.timeslot.end_time.strftime("%I:%M %p").upper()
+    end_time_formatted.short_description = 'End Time'
+
+@admin.register(GameType)
+class GameTypeAdmin(admin.ModelAdmin):
+    list_display = ['name', 'description']
+    search_fields = ['name']
+
+@admin.register(Tournament)
+class TournamentAdmin(admin.ModelAdmin):
+    list_display = ['name', 'game_type', 'start_date', 'end_date', 'field_count']
+    list_filter = ['game_type', 'start_date']
+    search_fields = ['name']
+    filter_horizontal = ['fields']
+    date_hierarchy = 'start_date'
+    
+    def field_count(self, obj):
+        return obj.fields.count()
+    field_count.short_description = 'Fields'
+
+@admin.register(TeamProfile)
+class TeamProfileAdmin(admin.ModelAdmin):
+    list_display = ['team_name', 'user', 'contact_email', 'phone_number']
+    search_fields = ['team_name', 'user__username', 'contact_email']
+
+@admin.register(ManagerProfile)
+class ManagerProfileAdmin(admin.ModelAdmin):
+    list_display = ['user', 'department', 'contact_email']
+    search_fields = ['user__username', 'department', 'contact_email']
+```
+
+---
+
+## API Views
+
+### **reservations/api/views.py**
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from reservations.models import Field, User
+import json
+
+@method_decorator(csrf_exempt, name='dispatch')
+class APIFieldModifyTeams(APIView):
+    """
+    API endpoint for modifying team assignments to fields
+    Django 5.2 compatible with proper CSRF handling
+    """
+    
+    def post(self, request, field_id):
+        try:
+            field = Field.objects.get(id=field_id)
+            
+            # Get team IDs from POST data
+            team_ids = request.POST.getlist('teams[]')
+            
+            # Clear existing teams and add new ones
+            field.teams.clear()
+            
+            if team_ids:
+                teams = User.objects.filter(id__in=team_ids)
+                field.teams.add(*teams)
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Teams updated successfully',
+                'team_count': field.teams.count()
+            })
+            
+        except Field.DoesNotExist:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Field not found'
+            }, status=404)
+            
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            }, status=500)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class APICalendar(APIView):
+    """
+    Calendar API endpoint for reservation data
+    """
+    
+    def get(self, request):
+        # Calendar API logic here
+        return Response({'status': 'success'})
+
+@method_decorator(csrf_exempt, name='dispatch') 
+class ToggleSidebar(APIView):
+    """
+    Toggle sidebar state API endpoint
+    """
+    
+    def post(self, request):
+        # Toggle sidebar logic here
+        return JsonResponse({'status': 'success'})
+```
+
+---
+
+## JavaScript Integration
+
+### **static/assets/js/scripts.js (Django 5.2 Fix)**
+```javascript
+// Django 5.2 Select2 Fix for Team Assignment
+$(document).ready(function() {
+    console.log("Loading Django 5.2 Select2 fix...");
+    
+    // Remove any existing handlers to prevent conflicts
+    $(".form-dynamic-select").off("change");
+    
+    // Add new Select2-compatible handler
+    $(".form-dynamic-select").on("change", "select", function() {
+        console.log('Select2 changed - submitting form');
+        var $form = $(this).closest("form");
+        
+        // Ensure we have a valid form
+        if ($form.length === 0) {
+            console.log('No form found');
+            return;
+        }
+        
+        $.ajax({
+            type: "POST",
+            url: $form.attr("action"),
+            data: $form.serialize(),
+            dataType: "json",
+            headers: {
+                'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(response) {
+                console.log("Team assignment successful:", response);
+                
+                // Show success message if available
+                if (response.message) {
+                    console.log("Success message:", response.message);
+                }
+                
+                // Reload page to reflect changes
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.log("Team assignment error:", xhr.status, xhr.responseText);
+                
+                // Handle cases where server returns 200 but jQuery treats as error
+                if (xhr.status === 200) {
+                    console.log("Success despite error status - reloading page");
+                    location.reload();
+                } else {
+                    // Show actual error
+                    console.error("AJAX error:", status, error);
+                    alert("Error updating teams. Please try again.");
+                }
+            }
+        });
+    });
+    
+    // Initialize Select2 if not already initialized
+    if (typeof $.fn.select2 !== 'undefined') {
+        $('.form-dynamic-select select').each(function() {
+            if (!$(this).hasClass('select2-hidden-accessible')) {
+                $(this).select2({
+                    width: '100%',
+                    placeholder: 'Select teams...',
+                    allowClear: true
+                });
+            }
+        });
+    }
+});
+
+// CSRF Token setup for all AJAX requests
+function setupCSRF() {
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(
