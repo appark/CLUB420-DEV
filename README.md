@@ -2330,3 +2330,685 @@ Create this as a manual testing checklist:
 - [ ] 500 server errors logged properly
 - [ ] Form validation errors displayed clearly
 - [ ] Database connection errors handled gracefully
+
+
+
+# Site Map and Production Deployment Guide
+
+## Complete Site Map
+
+### **Public Pages**
+```
+/                           → Dashboard (Homepage)
+├── /accounts/login/        → User login page
+├── /accounts/logout/       → User logout (POST)
+├── /accounts/change-email/ → Change email form
+└── /accounts/change-password/ → Change password form
+```
+
+### **User Dashboard Pages**
+```
+/calendar/                  → Calendar view (authenticated users)
+├── /calendar/2025/6/8/     → Specific date view
+└── /calendar/ajax/         → Calendar API endpoint
+```
+
+### **Admin Interface**
+```
+/admin/                     → Admin dashboard
+├── /admin/users/           → User management
+│   ├── /admin/users/add/   → Add new user
+│   ├── /admin/users/{id}/  → Edit user
+│   └── /admin/users/{id}/delete/ → Delete user
+│
+├── /admin/fields/          → Field management  
+│   ├── /admin/fields/add/  → Add new field
+│   ├── /admin/fields/{id}/ → Edit field & team assignments
+│   └── /admin/fields/{id}/delete/ → Delete field
+│
+├── /admin/game-types/      → Game type management
+│   ├── /admin/game-types/add/ → Add game type
+│   ├── /admin/game-types/{id}/ → Edit game type
+│   └── /admin/game-types/{id}/delete/ → Delete game type
+│
+├── /admin/tournaments/     → Tournament management
+│   ├── /admin/tournaments/add/ → Add tournament
+│   ├── /admin/tournaments/{id}/ → Edit tournament
+│   └── /admin/tournaments/{id}/delete/ → Delete tournament
+│
+├── /admin/reservations/    → Reservation management
+│   ├── /admin/reservations/add/ → Add reservation
+│   ├── /admin/reservations/{id}/ → Edit reservation
+│   └── /admin/reservations/{id}/delete/ → Delete reservation
+│
+└── /admin/settings/        → Website settings
+    ├── /admin/settings/edit-site-config/ → Edit site configuration
+    └── /admin/settings/edit-email-config/ → Edit email configuration
+```
+
+### **API Endpoints**
+```
+/api/calendar/              → Calendar data API
+/api/fields/{id}/modify-teams/ → Team assignment API
+/reservations/api/toggleSidebar/ → Sidebar state API
+```
+
+### **Static Files**
+```
+/static/assets/css/         → Stylesheets
+├── /static/assets/css/style.css → Main stylesheet
+├── /static/assets/css/bootstrap.css → Bootstrap framework
+└── /static/assets/css/custom.css → Custom overrides
+
+/static/assets/js/          → JavaScript files
+├── /static/assets/js/scripts.js → Main JavaScript (includes Select2 fix)
+├── /static/assets/js/jquery.js → jQuery library
+├── /static/assets/js/bootstrap.js → Bootstrap JavaScript
+└── /static/assets/js/select2.js → Select2 plugin
+
+/static/assets/images/      → Image assets
+├── /static/assets/images/logo.png → Site logo
+└── /static/assets/images/icons/ → Icon files
+
+/static/admin/              → Django admin static files
+```
+
+---
+
+## Database Structure Map
+
+### **Core Models Relationship Map**
+```
+User (Django built-in)
+├── TeamProfile (1:1) → team_name, contact_email, phone_number
+├── ManagerProfile (1:1) → department, contact_email
+├── Reservation (1:Many) → field, timeslot, date, notes
+└── Field.teams (Many:Many) → field access permissions
+
+Field
+├── TimeSlot (1:Many) → start_time, end_time, active
+├── Reservation (1:Many) → user, date, notes
+├── Tournament.fields (Many:Many) → tournament assignments
+└── teams (Many:Many) → User permissions
+
+TimeSlot
+├── Field (Many:1) → parent field
+└── Reservation (1:Many) → specific bookings
+
+GameType
+├── Tournament (1:Many) → tournament categorization
+└── (Used for sport categorization)
+
+Tournament
+├── GameType (Many:1) → sport type
+├── fields (Many:Many) → Field locations
+├── start_date, end_date → tournament duration
+└── description → tournament details
+
+WebsiteSetting (Key-Value Configuration)
+├── SITE_NAME → "San Ramon Soccer Club"
+├── SITE_DOMAIN → "https://demo2.ischeduleyou.com"
+├── EMAIL_HOST → "smtp.gmail.com"
+├── EMAIL_PORT → "587"
+├── EMAIL_USE_TLS → "True"
+├── EMAIL_HOST_USER → email username
+├── EMAIL_HOST_PASSWORD → email password
+├── SERVER_EMAIL → server email address
+├── EMAIL_SUBJECT_PREFIX → "[Site Name] "
+├── BLOCK_START_DAY → "0"
+├── BLOCK_START_TIME → "00:00:00"
+├── CALENDAR_RANGE_END → "7"
+├── CALENDAR_RANGE_START → "1"
+├── LAST_CLEAN_DATE → "06/07/2025"
+└── RESERVATION_TOKEN_TIMEOUT → "10"
+```
+
+### **Database Tables**
+```sql
+-- Core Django tables
+auth_user
+auth_group
+auth_permission
+auth_user_groups
+auth_user_user_permissions
+django_session
+django_admin_log
+django_content_type
+django_migrations
+
+-- Reservations app tables
+reservations_websitesetting
+reservations_gametype
+reservations_field
+reservations_field_teams
+reservations_timeslot
+reservations_reservation
+reservations_tournament
+reservations_tournament_fields
+reservations_teamprofile
+reservations_managerprofile
+```
+
+---
+
+## Production Deployment Guide
+
+### **Pre-Deployment Checklist**
+
+**✅ Code Preparation**
+- [ ] All 19 implementation steps completed
+- [ ] All tests passing
+- [ ] Documentation updated
+- [ ] Security settings configured
+- [ ] Environment variables prepared
+- [ ] SSL certificates ready
+
+**✅ Infrastructure Requirements**
+- [ ] Docker Engine 20.10+ installed
+- [ ] Docker Compose 2.0+ installed  
+- [ ] Minimum 2GB RAM available
+- [ ] 20GB+ disk space available
+- [ ] Domain name configured
+- [ ] SSL certificate obtained
+- [ ] Database backup strategy planned
+
+### **Production Configuration Changes**
+
+#### **1. Environment Variables (`docker-compose.prod.yml`)**
+```yaml
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: demo2-web-prod
+    ports:
+      - "80:8000"
+      - "443:8443"
+    volumes:
+      - ./static:/app/static:ro
+      - ./media:/app/media
+      - ./logs:/app/logs
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DEBUG=0
+      - DJANGO_ENV=production
+      - DATABASE_URL=postgresql://prod_user:secure_password@db:5432/demo2_prod
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=demo2.ischeduleyou.com,yourdomain.com
+      - CSRF_TRUSTED_ORIGINS=https://demo2.ischeduleyou.com,https://yourdomain.com
+    command: gunicorn demo2.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    container_name: demo2-db-prod
+    environment:
+      POSTGRES_DB: demo2_prod
+      POSTGRES_USER: prod_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    restart: unless-stopped
+    
+  redis:
+    image: redis:7-alpine
+    container_name: demo2-redis-prod
+    restart: unless-stopped
+    
+  nginx:
+    image: nginx:alpine
+    container_name: demo2-nginx-prod
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/ssl/certs:ro
+      - ./static:/var/www/static:ro
+    depends_on:
+      - web
+    restart: unless-stopped
+
+volumes:
+  postgres_prod_data:
+```
+
+#### **2. Production Settings (`demo2/settings_prod.py`)**
+```python
+from .settings import *
+import os
+
+# Security settings
+DEBUG = False
+ALLOWED_HOSTS = [
+    'demo2.ischeduleyou.com',
+    'yourdomain.com',
+    'www.yourdomain.com'
+]
+
+# Database configuration
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB', 'demo2_prod'),
+        'USER': os.environ.get('POSTGRES_USER', 'prod_user'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': 'db',
+        'PORT': '5432',
+        'CONN_MAX_AGE': 600,
+        'OPTIONS': {
+            'MAX_CONNS': 20,
+        }
+    }
+}
+
+# Cache configuration
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://redis:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+# Session configuration
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+
+# Security settings
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+
+# Cookie security
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Strict'
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+
+# Static files optimization
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = True
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': '/app/logs/django.log',
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['file', 'console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'reservations': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
+# Email configuration (production SMTP)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@yourdomain.com')
+SERVER_EMAIL = os.environ.get('SERVER_EMAIL', 'server@yourdomain.com')
+
+# Performance optimizations
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
+```
+
+#### **3. Nginx Configuration (`nginx.conf`)**
+```nginx
+events {
+    worker_connections 1024;
+}
+
+http {
+    upstream demo2_app {
+        server web:8000;
+    }
+
+    # HTTP redirect to HTTPS
+    server {
+        listen 80;
+        server_name demo2.ischeduleyou.com yourdomain.com;
+        return 301 https://$server_name$request_uri;
+    }
+
+    # HTTPS server
+    server {
+        listen 443 ssl http2;
+        server_name demo2.ischeduleyou.com yourdomain.com;
+
+        ssl_certificate /etc/ssl/certs/fullchain.pem;
+        ssl_certificate_key /etc/ssl/certs/privkey.pem;
+        
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384;
+        ssl_prefer_server_ciphers off;
+        ssl_session_cache shared:SSL:10m;
+
+        # Security headers
+        add_header X-Frame-Options "SAMEORIGIN" always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "no-referrer-when-downgrade" always;
+        add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
+
+        # Static files
+        location /static/ {
+            alias /var/www/static/;
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+
+        # Django application
+        location / {
+            proxy_pass http://demo2_app;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header Host $http_host;
+            proxy_redirect off;
+            proxy_buffering off;
+        }
+    }
+}
+```
+
+### **Deployment Steps**
+
+#### **1. Server Preparation**
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+
+# Install Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Create project directory
+sudo mkdir -p /opt/reservations/demo2-prod
+sudo chown $USER:$USER /opt/reservations/demo2-prod
+cd /opt/reservations/demo2-prod
+```
+
+#### **2. Code Deployment**
+```bash
+# Clone or copy code to production server
+git clone https://github.com/yourorg/demo2-soccer-reservation.git .
+# OR
+rsync -av --exclude-from='.rsyncignore' /path/to/demo2/ /opt/reservations/demo2-prod/
+
+# Create environment file
+cat > .env << 'EOF'
+SECRET_KEY=your-very-long-random-secret-key-here
+DB_PASSWORD=your-secure-database-password
+EMAIL_HOST_USER=your-email@domain.com
+EMAIL_HOST_PASSWORD=your-email-password
+DEFAULT_FROM_EMAIL=noreply@yourdomain.com
+SERVER_EMAIL=server@yourdomain.com
+EOF
+
+# Set secure permissions
+chmod 600 .env
+```
+
+#### **3. SSL Certificate Setup**
+```bash
+# Using Let's Encrypt (recommended)
+sudo apt install certbot
+sudo certbot certonly --standalone -d demo2.ischeduleyou.com -d yourdomain.com
+
+# Copy certificates to project
+sudo mkdir -p ssl
+sudo cp /etc/letsencrypt/live/yourdomain.com/fullchain.pem ssl/
+sudo cp /etc/letsencrypt/live/yourdomain.com/privkey.pem ssl/
+sudo chown -R $USER:$USER ssl/
+```
+
+#### **4. Production Deployment**
+```bash
+# Build and start production containers
+docker-compose -f docker-compose.prod.yml up --build -d
+
+# Run database migrations
+docker-compose -f docker-compose.prod.yml exec web python manage.py migrate
+
+# Create superuser
+docker-compose -f docker-compose.prod.yml exec web python manage.py createsuperuser
+
+# Collect static files
+docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --noinput
+
+# Load initial data (if available)
+docker-compose -f docker-compose.prod.yml exec web python manage.py loaddata initial_data.json
+
+# Verify deployment
+curl -I https://yourdomain.com
+```
+
+#### **5. Monitoring Setup**
+```bash
+# Create monitoring script
+cat > monitor.sh << 'EOF'
+#!/bin/bash
+# Production monitoring script
+
+echo "=== Demo2 Production Health Check ===" 
+echo "Time: $(date)"
+
+# Container status
+echo "Container Status:"
+docker-compose -f docker-compose.prod.yml ps
+
+# Application response
+echo "Application Response:"
+RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://yourdomain.com)
+echo "Main page: $RESPONSE"
+
+# Database connectivity
+echo "Database Status:"
+docker-compose -f docker-compose.prod.yml exec web python manage.py check --database default
+
+# Disk usage
+echo "Disk Usage:"
+df -h /opt/reservations/demo2-prod
+
+# Log recent errors
+echo "Recent Errors:"
+docker-compose -f docker-compose.prod.yml logs --tail=10 | grep -i error
+
+echo "=== Health Check Complete ==="
+EOF
+
+chmod +x monitor.sh
+
+# Add to crontab for regular monitoring
+echo "*/5 * * * * /opt/reservations/demo2-prod/monitor.sh >> /var/log/demo2-monitor.log 2>&1" | crontab -
+```
+
+### **Backup Strategy**
+
+#### **Database Backup Script**
+```bash
+cat > backup.sh << 'EOF'
+#!/bin/bash
+# Database backup script
+
+BACKUP_DIR="/opt/reservations/demo2-prod/backups"
+DATE=$(date +%Y%m%d_%H%M%S)
+FILENAME="demo2_backup_$DATE.sql"
+
+# Create backup directory
+mkdir -p $BACKUP_DIR
+
+# Create database backup
+docker-compose -f docker-compose.prod.yml exec -T db pg_dump -U prod_user demo2_prod > $BACKUP_DIR/$FILENAME
+
+# Compress backup
+gzip $BACKUP_DIR/$FILENAME
+
+# Remove backups older than 30 days
+find $BACKUP_DIR -name "*.sql.gz" -mtime +30 -delete
+
+echo "Backup created: $FILENAME.gz"
+EOF
+
+chmod +x backup.sh
+
+# Schedule daily backups
+echo "0 2 * * * /opt/reservations/demo2-prod/backup.sh" | crontab -
+```
+
+#### **File System Backup**
+```bash
+# Create full system backup script
+cat > full_backup.sh << 'EOF'
+#!/bin/bash
+# Full system backup
+
+BACKUP_BASE="/backups/demo2"
+DATE=$(date +%Y%m%d)
+BACKUP_DIR="$BACKUP_BASE/$DATE"
+
+mkdir -p $BACKUP_DIR
+
+# Backup application files
+tar -czf $BACKUP_DIR/app_files.tar.gz \
+    --exclude='*.log' \
+    --exclude='__pycache__' \
+    --exclude='.git' \
+    /opt/reservations/demo2-prod
+
+# Backup database
+docker-compose -f docker-compose.prod.yml exec -T db pg_dump -U prod_user demo2_prod | gzip > $BACKUP_DIR/database.sql.gz
+
+# Backup SSL certificates
+tar -czf $BACKUP_DIR/ssl_certs.tar.gz /opt/reservations/demo2-prod/ssl
+
+echo "Full backup completed: $BACKUP_DIR"
+EOF
+
+chmod +x full_backup.sh
+
+# Schedule weekly full backups
+echo "0 1 * * 0 /opt/reservations/demo2-prod/full_backup.sh" | crontab -
+```
+
+### **Performance Optimization**
+
+#### **Database Optimization**
+```sql
+-- Run these queries periodically for optimization
+-- Connect to production database
+
+-- Analyze tables
+ANALYZE;
+
+-- Vacuum database
+VACUUM;
+
+-- Check index usage
+SELECT schemaname, tablename, attname, n_distinct, correlation 
+FROM pg_stats 
+WHERE schemaname = 'public' 
+ORDER BY n_distinct DESC;
+
+-- Identify slow queries
+SELECT query, mean_time, calls, total_time 
+FROM pg_stat_statements 
+ORDER BY mean_time DESC 
+LIMIT 10;
+```
+
+#### **Application Performance**
+```bash
+# Enable Django cache
+docker-compose -f docker-compose.prod.yml exec web python manage.py createcachetable
+
+# Optimize static file serving
+docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --noinput --clear
+
+# Monitor resource usage
+docker stats demo2-web-prod demo2-db-prod demo2-redis-prod
+```
+
+### **Security Checklist**
+
+**✅ Server Security**
+- [ ] Firewall configured (only ports 80, 443, 22 open)
+- [ ] SSH key-based authentication only
+- [ ] Regular security updates applied
+- [ ] Non-root user for deployment
+- [ ] SSL certificates valid and auto-renewing
+
+**✅ Application Security**
+- [ ] DEBUG=False in production
+- [ ] SECRET_KEY unique and secure
+- [ ] Database passwords strong and unique
+- [ ] ALLOWED_HOSTS properly configured
+- [ ] CSRF_TRUSTED_ORIGINS configured
+- [ ] All security headers enabled
+- [ ] File upload restrictions in place
+
+**✅ Database Security**
+- [ ] Database user has minimal required permissions
+- [ ] Database not accessible from internet
+- [ ] Regular backups tested and verified
+- [ ] Connection encryption enabled
+- [ ] Query logging enabled for monitoring
+
+**✅ Infrastructure Security**
+- [ ] Docker containers run as non-root
+- [ ] Container images regularly updated
+- [ ] Secrets managed through environment variables
+- [ ] Log files rotated and archived
+- [ ] Monitoring and alerting configured
+
+This completes the comprehensive Demo2 modernization documentation with all code references, troubleshooting procedures, site mapping, and production deployment guidelines.
