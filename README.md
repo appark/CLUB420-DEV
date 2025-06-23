@@ -1,75 +1,234 @@
-# Club420 Complete System Documentation - PHASE 2A COMPLETED WITH YITH BADGES WORKING
+# COMPLETE CLUB420 SYSTEM - COPY THIS FOR NEW CHAT
 
-## **CURRENT SYSTEM STATUS - PHASE 2A COMPLETED**
-
-**Status**: ✅ **PHASE 2A COMPLETED** - WooCommerce native approach implemented with YITH working  
-**Last Updated**: December 11, 2024  
-**Performance**: Grade A+ (85% Performance, 97% Structure) - **MAINTAINED**  
-**Total Blocking Time**: 25ms (target <300ms)  
-**Production Status**: ✅ **LIVE AND OPERATIONAL** with Phase 2A completed
-**Architecture**: **Custom Plugin-Level System** built with Code Snippets approach
-
-## **PHASE 2A COMPLETION STATUS**
-
-### **✅ COMPLETED in Phase 2A - FINAL SOLUTION:**
-1. **✅ YITH Badge Integration**: **WORKING PERFECTLY** - Uses WooCommerce native shortcodes
-2. **🎨 Arrow Styling**: ETmodules font (`\34` and `\35`) - matches icon slider exactly
-3. **🏗️ WooCommerce Native Architecture**: Future-proof using official `[products]` shortcodes
-4. **📐 Section Spacing**: Tight spacing matching category sections
-5. **📱 Responsive Design**: Perfect behavior across all devices
-6. **🔧 Future-Proof Architecture**: Uses WooCommerce standards for maximum compatibility
-
-### **🎯 PHASE 2A FINAL APPROACH - WOOCOMMERCE NATIVE:**
-**Solution**: Replaced custom product card generation with WooCommerce native `[products]` shortcodes styled as horizontal carousels
-
-**Benefits**:
-- ✅ **YITH badges work automatically** (native WooCommerce loop)
-- ✅ **Future-proof** (uses WooCommerce standards)
-- ✅ **All plugins compatible** (pricing, inventory, etc.)
-- ✅ **90% less custom code** to maintain
-- ✅ **Professional WordPress approach**
+**Copy everything below this line into your new chat:**
 
 ---
 
-## 🏗️ **CURRENT WORKING SYSTEM ARCHITECTURE**
-This is essentially a **complete custom plugin** built using the Code Snippets approach, providing:
-- **Multi-store WooCommerce system** (Davis/Dixon locations)
-- **Smart age verification** with cannabis compliance
-- **WooCommerce native carousels** with YITH integration ✅ **COMPLETED**
-- **Store-specific product filtering** and management
-- **Automated button generation** for external menu links
-- **Professional admin interface** for product management
-- **Grade A+ performance** with smart bot detection
+I'm working on documenting the CLUB420 WooCommerce system on GitHub. We just finished organizing everything and need to create the individual files.
+
+TASK: Help me break this complete working system into individual GitHub files and create INSTALLATION.md
+
+## COMPLETED README.MD (READY FOR GITHUB)
+
+```markdown
+# CLUB420 WooCommerce Real-Time Scheduler & Tymber Integration
+
+**Status**: ✅ **PHASE 2B COMPLETED** - Production Ready  
+**Last Updated**: December 2024  
+**Performance**: Grade A+ (85% Performance, 97% Structure)  
+**Production Status**: ✅ **LIVE AND OPERATIONAL**
+
+## 🏗️ **System Architecture Overview**
+
+This is a sophisticated multi-system integration combining:
+- **WordPress/WooCommerce** main site with real-time product scheduling
+- **Tymber menu system** integration via proxy pass (`/menu/f-street/` → Tymber Davis, `/menu/highway-80/` → Tymber Dixon)
+- **Shared state management** across system boundaries using localStorage
+- **Cannabis compliance** age gate with cross-system persistence
+- **Store-specific content and navigation** using CSS class visibility control
+
+## 🔄 **Technical Integration Flow**
+
+```
+User Journey:
+1. Lands on club420.com (WordPress)
+2. Age gate verification → localStorage: 'tymber-user-has-allowed-age'
+3. Store selection → localStorage: 'last-store-selected' (Davis/Dixon)
+4. JavaScript shows store-specific content using CSS classes:
+   - .davis-content/.davis-menu sections visible for Davis users
+   - .dixon-content/.dixon-menu sections visible for Dixon users
+5. Menu clicks route to appropriate Tymber system:
+   - Davis Store → https://club420.com/menu/f-street/categories/flower/
+   - Dixon Store → https://club420.com/menu/highway-80/categories/flower/
+6. Tymber pages read localStorage → No re-verification needed
+```
+
+## 🌐 **Cross-System State Management**
+
+### **Shared localStorage Keys:**
+- `tymber-user-has-allowed-age`: Cannabis compliance verification
+- `last-store-selected`: Store preference (Davis/Dixon mapping)
+
+### **Store ID Mapping:**
+- **Davis Store**: `79043044-f024-4b70-8714-4fcad409f978` → `/menu/f-street/`
+- **Dixon Store**: `7029749f-9c6d-419e-b037-5c1b566f3df9` → `/menu/highway-80/`
+
+### **Proxy Architecture:**
+- `club420.com/menu/f-street/` → Proxy pass to Tymber (Davis location)
+- `club420.com/menu/highway-80/` → Proxy pass to Tymber (Dixon location)
+- Same-domain experience maintains localStorage access
+
+## 🎨 **Divi Content Organization System**
+
+### **CSS Class Visibility Control:**
+**Content Sections:**
+- `.davis-content` = Page sections/modules only visible to Davis store users
+- `.dixon-content` = Page sections/modules only visible to Dixon store users
+
+**Navigation Menu:**
+- `.davis-menu` = Menu items only visible to Davis store users  
+- `.dixon-menu` = Menu items only visible to Dixon store users
+
+### **Divi Builder Workflow:**
+1. **Content Sections**: Add CSS class `davis-content` or `dixon-content` to sections
+2. **Menu Items**: Add CSS class `davis-menu` or `dixon-menu` to navigation items
+3. **Store Dropdowns**: Use `styled-store-select-*` ID pattern for automatic detection
+4. **Carousel Placement**: 
+   - Davis sections: `[club420_deals_carousel store="davis"]`
+   - Dixon sections: `[club420_deals_carousel store="dixon"]`
+
+### **Store Dropdown Integration:**
+```html
+<select id="styled-store-select-page">
+  <option value="">Choose Store Location</option>
+  <option value="davis">Davis Store</option>
+  <option value="dixon">Dixon Store</option>
+</select>
+```
+- **Auto-Detection**: Any dropdown with ID starting `styled-store-select-` is handled
+- **Multi-Dropdown Sync**: Multiple dropdowns stay synchronized
+- **Smooth Transitions**: Automatic page transitions when store changes
+
+## 🚀 **Core System Components**
+
+### **WordPress/WooCommerce Layer**
+- **Real-time product scheduling** - Products activate at exact scheduled times
+- **WP Engine cache exclusion** - Bypasses cache for scheduled content
+- **Store-specific product filtering** - Davis/Dixon inventory separation
+- **Admin scheduling interface** - Visual product scheduling in WooCommerce
+- **BlazeSlider carousels** - Real-time updating product displays
+
+### **JavaScript Integration Layer**
+- **Age gate system** with bot detection for performance testing
+- **Store picker** with localStorage persistence
+- **Content visibility control** using CSS class system
+- **Menu navigation** with automatic Tymber routing via text detection
+- **Page transitions** for smooth user experience
+- **Multi-dropdown sync** across page elements
+
+### **Divi Menu Navigation System**
+**Text-Based Detection** - JavaScript intercepts menu clicks based on Navigation Label:
+- **FLOWER** → `/categories/flower/`
+- **CARTRIDGES** → `/categories/cartridge/`
+- **EDIBLES** → `/categories/edible/`
+- **PRE-ROLLS** or **PREROLLS** → `/categories/preroll/`
+- **EXTRACTS** or **EXTRACT** → `/categories/extract/`
+- **SHOP ALL** or **ALL** or **SHOP NOW** → `/` (all products)
+
+### **Tymber Menu Integration**
+- **Seamless authentication** - No re-verification required
+- **Store-specific routing** - Automatic navigation to correct location
+- **Cross-system state** - User preferences maintained
+
+## 📁 **Repository Structure**
+
+```
+├── README.md                          # This file
+├── INSTALLATION.md                    # Step-by-step setup guide
+├── php-snippets/                      # 6 PHP files for Code Snippets plugin
+│   ├── 01-store-filter-cache.php     # Main filtering + WP Engine cache exclusion
+│   ├── 02-product-scheduler.php      # Admin interface with real-time scheduling
+│   ├── 03-admin-filter.php           # Admin products page filtering & indicators
+│   ├── 04-auto-button-generator.php  # Dynamic button generation (no flash)
+│   ├── 05-blazeslider-carousel.php   # Real-time updating product carousels
+│   └── 06-scheduler-dashboard.php    # Admin monitoring dashboard
+├── javascript/                       # 7 JS components for Divi body integration
+│   ├── age-gate.js                   # Cannabis compliance verification
+│   ├── store-picker.js               # Store selection with localStorage
+│   ├── woocommerce-admin.js          # Admin interface enhancements
+│   ├── woocommerce-menu-links.js     # Tymber navigation system (text detection)
+│   ├── woocommerce-carousel.js       # Carousel functionality
+│   ├── woocommerce-scheduler.js      # Real-time scheduling logic
+│   └── page-transitions.js          # Smooth transitions between systems
+├── docs/                             # Technical documentation
+│   ├── how-it-works.md              # System architecture deep dive
+│   ├── divi-integration.md           # CSS class system & dropdown setup
+│   ├── tymber-integration.md         # Proxy setup & localStorage sharing
+│   ├── store-id-configuration.md    # Store ID mapping changes
+│   ├── wp-engine-cache.md           # Cache exclusion implementation
+│   └── troubleshooting.md           # Common issues & solutions
+└── assets/                          # Screenshots and diagrams
+```
+
+## 🔧 **Technical Features**
+
+### **Real-Time Scheduling Engine**
+- **Zero-delay activation** - Products show/hide at exact scheduled times
+- **UTC timestamp storage** with Los Angeles timezone display
+- **Database-level filtering** bypasses WordPress caching
+- **WP Engine cache exclusion** for pages with active schedules
+
+### **Cross-System Authentication**
+- **One-time age verification** persists across WordPress + Tymber
+- **Store selection persistence** via localStorage
+- **Bot detection** for performance testing tools (bypasses age gate)
+- **Safari compatibility** with direct button functions
+
+### **Store Management**
+- **Davis Store** (F-Street) - Independent inventory, content, and navigation
+- **Dixon Store** (Highway-80) - Independent inventory, content, and navigation
+- **Real-time filtering** based on user store selection
+- **Admin visual indicators** for store availability
+- **Content duplication** - Same layout, different store-specific content
+
+### **Performance Optimizations**
+- **Grade A+ performance** maintained with extensive functionality
+- **Conditional script loading** only on relevant pages
+- **Cache-aware queries** for real-time updates
+- **Ultra-fast page transitions** with zero flash
+
+## 📊 **System Status Dashboard**
+
+| Component | Status | Technical Purpose |
+|-----------|--------|------------------|
+| Store Filter + Cache | ✅ Active | Database filtering with WP Engine cache exclusion |
+| Product Scheduler | ✅ Active | Admin UI with UTC/timezone conversion |
+| Admin Filter | ✅ Active | Visual indicators and store-based filtering |
+| Auto Button Generator | ✅ Active | Dynamic buttons with flash prevention |
+| BlazeSlider Carousel | ✅ Active | Real-time product carousels |
+| Scheduler Dashboard | ✅ Active | Live monitoring of scheduled products |
+| Age Gate + Store Picker | ✅ Active | Cannabis compliance with localStorage persistence |
+| CSS Class Visibility | ✅ Active | Content/menu control using .davis-* and .dixon-* classes |
+| Store Dropdown System | ✅ Active | Multi-dropdown sync with styled-store-select-* pattern |
+| Tymber Menu Integration | ✅ Active | Text-based navigation to proxy-passed Tymber system |
+
+## ⚠️ **Critical Configuration Points**
+
+1. **Store IDs**: Hardcoded in JavaScript - see `docs/store-id-configuration.md` if changed
+2. **Proxy Setup**: Menu URLs must proxy to Tymber correctly for localStorage sharing
+3. **WP Engine Cache**: Cache exclusion headers required for real-time scheduling
+4. **localStorage Keys**: Must match between WordPress and Tymber systems
+5. **CSS Classes**: Must use `.davis-content`, `.dixon-content`, `.davis-menu`, `.dixon-menu` in Divi
+6. **Dropdown IDs**: Must start with `styled-store-select-` for automatic detection
+
+## 🎯 **Quick Start**
+
+1. **Installation**: Follow [INSTALLATION.md](INSTALLATION.md) for complete setup
+2. **Divi Setup**: Add CSS classes to sections and menu items for store visibility
+3. **Tymber Integration**: Ensure proxy pass is configured correctly
+4. **Test Flow**: Verify age gate → store selection → content visibility → menu navigation
+5. **Admin Setup**: Configure product schedules and monitor via dashboard
 
 ---
 
-## 🛠️ **COMPLETE INSTALLATION GUIDE**
+**CLUB420 - Sophisticated cannabis retail system with real-time scheduling and seamless Tymber integration**
+```
 
-### **System Architecture - Plugin-Level Functionality**
-- **5 PHP Code Snippets** (WordPress Admin → Code Snippets) ✅ **ACTIVE**
-- **1 Smart JavaScript System** (Divi → Theme Options → Integration → Body) ✅ **UPDATED**  
-- **1 Frontend Dropdown** (Divi Code Module on front page) ✅ **ACTIVE**
-- **WooCommerce Native Carousel Shortcodes** (Inside .davis-content and .dixon-content sections) ✅ **PHASE 2A COMPLETED**
+## 6 PHP SNIPPETS (WordPress Code Snippets plugin)
 
-### **Required WordPress Plugins**
-- **Code Snippets** (for current implementation) ✅ **ESSENTIAL**
-- **WooCommerce** (e-commerce functionality) ✅ **REQUIRED**
-- **Divi Theme** (for JavaScript integration) ✅ **REQUIRED**
-- **YITH WooCommerce Badge Management** (for product badges) ✅ **COMPATIBLE AND WORKING**
-
----
-
-## 📋 **COMPLETE PHP SNIPPETS (5 TOTAL - PRODUCTION READY)**
-
-### **Snippet 1: Club420 Carousel Store Filter**
-**Purpose**: Database-level product filtering for shop pages  
-**Location**: WordPress Admin → Code Snippets → Add New  
-**Status**: ✅ ACTIVE - Production Ready
-
+### SNIPPET 1: Club420 Store Filter + Cache Exclusion
 ```php
-// Enhanced Club420 Carousel Store Filter - With Toggle Support
-add_filter('woocommerce_shortcode_products_query', 'club420_enhanced_filter_by_store', 10, 2);
-function club420_enhanced_filter_by_store($args, $atts) {
+// Club420 Carousel Store Filter - REAL-TIME SCHEDULING + CACHE EXCLUSION
+// Clean Production Version
+
+add_filter('woocommerce_shortcode_products_query', 'club420_realtime_filter_with_scheduling', 10, 2);
+function club420_realtime_filter_with_scheduling($args, $atts) {
+    
+    // SKIP filtering if this is from our custom carousel
+    if (isset($args['club420_carousel_query']) && $args['club420_carousel_query'] === true) {
+        return $args; // Let carousel handle its own filtering
+    }
+    
     $store_location = isset($_GET['store_filter']) ? sanitize_text_field($_GET['store_filter']) : 'all';
     
     if ($store_location !== 'all') {
@@ -77,37 +236,145 @@ function club420_enhanced_filter_by_store($args, $atts) {
             $args['meta_query'] = array();
         }
         
-        // Set relation to AND (both conditions must be true)
-        $args['meta_query']['relation'] = 'AND';
+        // Set relation to OR - product shows if EITHER manual toggle OR schedule is active
+        $args['meta_query']['relation'] = 'OR';
         
         if ($store_location === 'davis') {
-            // Must have Davis URL AND be enabled for Davis
+            
+            // OPTION 1: Manual toggle enabled (original system)
             $args['meta_query'][] = array(
-                'key' => '_club420_davis_url',
-                'value' => '',
-                'compare' => '!='
+                'relation' => 'AND',
+                array(
+                    'key' => '_club420_davis_url',
+                    'value' => '',
+                    'compare' => '!='
+                ),
+                array(
+                    'key' => '_club420_davis_enabled',
+                    'value' => 'yes',
+                    'compare' => '='
+                )
             );
+            
+            // OPTION 2: Scheduled and currently active (NEW real-time system)
             $args['meta_query'][] = array(
-                'key' => '_club420_davis_enabled',
-                'value' => 'yes',
-                'compare' => '='
+                'relation' => 'AND',
+                array(
+                    'key' => '_club420_davis_url',
+                    'value' => '',
+                    'compare' => '!='
+                ),
+                array(
+                    'key' => '_club420_davis_visibility',
+                    'value' => 'scheduled',
+                    'compare' => '='
+                ),
+                array(
+                    'key' => '_club420_davis_schedule_start',
+                    'value' => current_time('timestamp', true), // Current UTC timestamp
+                    'compare' => '<='
+                ),
+                array(
+                    'key' => '_club420_davis_schedule_end',
+                    'value' => current_time('timestamp', true), // Current UTC timestamp
+                    'compare' => '>='
+                )
             );
+            
+            // OPTION 3: Always visible (from Snippet 6 system)
+            $args['meta_query'][] = array(
+                'relation' => 'AND',
+                array(
+                    'key' => '_club420_davis_url',
+                    'value' => '',
+                    'compare' => '!='
+                ),
+                array(
+                    'key' => '_club420_davis_visibility',
+                    'value' => 'always',
+                    'compare' => '='
+                )
+            );
+            
         } elseif ($store_location === 'dixon') {
-            // Must have Dixon URL AND be enabled for Dixon
+            
+            // OPTION 1: Manual toggle enabled (original system)
             $args['meta_query'][] = array(
-                'key' => '_club420_dixon_url',
-                'value' => '',
-                'compare' => '!='
+                'relation' => 'AND',
+                array(
+                    'key' => '_club420_dixon_url',
+                    'value' => '',
+                    'compare' => '!='
+                ),
+                array(
+                    'key' => '_club420_dixon_enabled',
+                    'value' => 'yes',
+                    'compare' => '='
+                )
             );
+            
+            // OPTION 2: Scheduled and currently active (NEW real-time system)
             $args['meta_query'][] = array(
-                'key' => '_club420_dixon_enabled',
-                'value' => 'yes',
-                'compare' => '='
+                'relation' => 'AND',
+                array(
+                    'key' => '_club420_dixon_url',
+                    'value' => '',
+                    'compare' => '!='
+                ),
+                array(
+                    'key' => '_club420_dixon_visibility',
+                    'value' => 'scheduled',
+                    'compare' => '='
+                ),
+                array(
+                    'key' => '_club420_dixon_schedule_start',
+                    'value' => current_time('timestamp', true), // Current UTC timestamp
+                    'compare' => '<='
+                ),
+                array(
+                    'key' => '_club420_dixon_schedule_end',
+                    'value' => current_time('timestamp', true), // Current UTC timestamp
+                    'compare' => '>='
+                )
+            );
+            
+            // OPTION 3: Always visible (from Snippet 6 system)
+            $args['meta_query'][] = array(
+                'relation' => 'AND',
+                array(
+                    'key' => '_club420_dixon_url',
+                    'value' => '',
+                    'compare' => '!='
+                ),
+                array(
+                    'key' => '_club420_dixon_visibility',
+                    'value' => 'always',
+                    'compare' => '='
+                )
+            );
+        }
+        
+        // WP ENGINE CACHE BUSTING: Add timestamp to force fresh queries
+        if (!isset($args['meta_query']['cache_buster'])) {
+            $args['meta_query']['cache_buster'] = array(
+                'key' => '_club420_cache_timestamp',
+                'value' => floor(current_time('timestamp') / 300), // Changes every 5 minutes
+                'compare' => 'NOT EXISTS'
             );
         }
     }
     
     return $args;
+}
+
+// WP ENGINE OPTIMIZATION: Clear object cache when products are saved
+add_action('save_post_product', 'club420_clear_product_cache');
+function club420_clear_product_cache($post_id) {
+    // Clear WP Engine object cache for this product
+    clean_post_cache($post_id);
+    
+    // Also clear any WooCommerce transients
+    wc_delete_product_transients($post_id);
 }
 
 // Keep the conditional loading prep from previous optimization
@@ -121,88 +388,450 @@ add_action('wp', 'club420_conditional_scripts');
 function club420_load_optimized_scripts() {
     echo '<script>window.club420LoadOptimized=true;</script>';
 }
+
+// WP ENGINE CACHE EXCLUSION - Exclude pages with scheduled products from cache
+add_action('wp', 'club420_bypass_cache_for_scheduled_products', 5);
+function club420_bypass_cache_for_scheduled_products() {
+    // Only check on pages that show product carousels
+    if (!is_front_page() && !is_shop() && !is_product_category()) {
+        return;
+    }
+    
+    // Skip for logged-in users (they get fresh data anyway)
+    if (is_user_logged_in()) {
+        return;
+    }
+    
+    global $wpdb;
+    
+    // Check if ANY products have active schedules RIGHT NOW
+    $current_utc_time = current_time('timestamp', true);
+    
+    $active_scheduled = $wpdb->get_var($wpdb->prepare("
+        SELECT COUNT(*) 
+        FROM {$wpdb->postmeta} pm1
+        INNER JOIN {$wpdb->postmeta} pm2 ON pm1.post_id = pm2.post_id
+        INNER JOIN {$wpdb->postmeta} pm3 ON pm1.post_id = pm3.post_id
+        WHERE (pm1.meta_key = '_club420_davis_visibility' OR pm1.meta_key = '_club420_dixon_visibility')
+        AND pm1.meta_value = 'scheduled'
+        AND ((pm2.meta_key = '_club420_davis_schedule_start' OR pm2.meta_key = '_club420_dixon_schedule_start'))
+        AND ((pm3.meta_key = '_club420_davis_schedule_end' OR pm3.meta_key = '_club420_dixon_schedule_end'))
+        AND pm2.meta_value <= %s
+        AND pm3.meta_value >= %s
+    ", $current_utc_time, $current_utc_time));
+    
+    if ($active_scheduled > 0) {
+        // BYPASS WP ENGINE CACHE - This page has active scheduled products
+        if (!headers_sent()) {
+            header('Cache-Control: no-cache, no-store, must-revalidate, max-age=0');
+            header('Pragma: no-cache');
+            header('Expires: 0');
+            
+            // WP Engine specific headers
+            if (defined('WPE_APIKEY') || function_exists('wpe_param')) {
+                header('X-Cache-Control: no-cache');
+                header('X-WPE-Cache-Control: no-cache');
+            }
+        }
+    }
+}
 ```
 
-### **Snippet 2: Club420 Product URL Fields**
-**Purpose**: Product admin interface with toggle system  
-**Location**: WordPress Admin → Code Snippets → Add New  
-**Status**: ✅ ACTIVE - Production Ready
-
+### SNIPPET 2: Product URL Fields with Scheduler
 ```php
-// "Club420 Product URL Fields" 
-// Add enhanced fields to WooCommerce product admin
-add_action('woocommerce_product_options_general_product_data', 'club420_add_enhanced_product_fields');
-function club420_add_enhanced_product_fields() {
+// Enhanced "Club420 Product URL Fields with Scheduler" - COMPLETE WITH FIXED SAVE Snippet 2
+// PHASE 2B: Radio button interface with scheduling system
+// Backward compatible with existing checkbox system
+
+add_action('woocommerce_product_options_general_product_data', 'club420_add_enhanced_product_fields_with_scheduler');
+function club420_add_enhanced_product_fields_with_scheduler() {
+    global $post;
+    $product_id = $post->ID;
+    
     echo '<div class="options_group">';
-    echo '<h4 style="padding-left: 12px; margin-bottom: 10px; color: #0073aa;">CLUB420 Store Settings</h4>';
+    echo '<h4 style="padding-left: 12px; margin-bottom: 10px; color: #0073aa;">CLUB420 Store Settings with Scheduler</h4>';
+    
+    // Get current WordPress timezone for proper time handling
+    $wp_timezone = wp_timezone();
     
     // Davis Store Section
     echo '<div style="padding: 12px; border: 1px solid #ddd; margin-bottom: 15px; border-radius: 5px;">';
     echo '<h5 style="margin: 0 0 10px 0; color: #2271b1;">Davis Store</h5>';
     
-    // Davis Enable Checkbox
-    woocommerce_wp_checkbox(array(
-        'id' => '_club420_davis_enabled',
-        'label' => 'Enable for Davis Store'
+    // Davis visibility options (radio buttons)
+    echo '<p style="margin-bottom: 10px; font-weight: 500;">Product visibility for Davis customers:</p>';
+    
+    // Get current Davis visibility setting (with backward compatibility)
+    $davis_visibility = get_post_meta($product_id, '_club420_davis_visibility', true);
+    $davis_enabled = get_post_meta($product_id, '_club420_davis_enabled', true);
+    
+    // Backward compatibility: convert old checkbox to radio value
+    if (empty($davis_visibility)) {
+        if ($davis_enabled === 'yes') {
+            $davis_visibility = 'always';
+        } else {
+            $davis_visibility = 'disabled';
+        }
+    }
+    
+    woocommerce_wp_radio( array(
+        'id' => '_club420_davis_visibility',
+        'value' => $davis_visibility,
+        'options' => array(
+            'always' => 'Always visible to Davis customers',
+            'scheduled' => 'Visible only during scheduled times',
+            'disabled' => 'Not available to Davis customers'
+        )
     ));
     
-    // Davis URL Field
+    // Davis URL Field (unchanged)
     woocommerce_wp_text_input(array(
         'id' => '_club420_davis_url',
         'label' => 'Davis Store URL',
         'type' => 'url',
         'placeholder' => 'https://club420.com/menu/f-street/categories/...'
     ));
-    echo '</div>';
     
-    // Dixon Store Section  
+    // Davis Schedule Section (shows when scheduled is selected)
+    echo '<div id="davis_schedule_section" style="display: none; background: #e8f4fd; border: 1px solid #0073aa; border-radius: 4px; padding: 15px; margin-top: 10px;">';
+    echo '<h6 style="margin: 0 0 10px 0; color: #0073aa;">📅 Davis Store Schedule</h6>';
+    echo '<p style="font-size: 12px; color: #666; margin-bottom: 10px;">Times are in Los Angeles timezone (your business timezone)</p>';
+    
+    // Davis Start Date/Time
+    woocommerce_wp_text_input(array(
+        'id' => '_club420_davis_schedule_start',
+        'label' => '🟢 START: Show product from',
+        'type' => 'datetime-local',
+        'custom_attributes' => array(
+            'step' => '60'
+        ),
+        'description' => 'Date and time when product becomes visible'
+    ));
+    
+    // Davis End Date/Time
+    woocommerce_wp_text_input(array(
+        'id' => '_club420_davis_schedule_end',
+        'label' => '🔴 END: Hide product after',
+        'type' => 'datetime-local',
+        'custom_attributes' => array(
+            'step' => '60'
+        ),
+        'description' => 'Date and time when product becomes hidden'
+    ));
+    
+    echo '</div>'; // End Davis schedule section
+    echo '</div>'; // End Davis store section
+    
+    // Dixon Store Section
     echo '<div style="padding: 12px; border: 1px solid #ddd; margin-bottom: 10px; border-radius: 5px;">';
     echo '<h5 style="margin: 0 0 10px 0; color: #2271b1;">Dixon Store</h5>';
     
-    // Dixon Enable Checkbox
-    woocommerce_wp_checkbox(array(
-        'id' => '_club420_dixon_enabled',
-        'label' => 'Enable for Dixon Store'
+    // Dixon visibility options (radio buttons)
+    echo '<p style="margin-bottom: 10px; font-weight: 500;">Product visibility for Dixon customers:</p>';
+    
+    // Get current Dixon visibility setting (with backward compatibility)
+    $dixon_visibility = get_post_meta($product_id, '_club420_dixon_visibility', true);
+    $dixon_enabled = get_post_meta($product_id, '_club420_dixon_enabled', true);
+    
+    // Backward compatibility: convert old checkbox to radio value
+    if (empty($dixon_visibility)) {
+        if ($dixon_enabled === 'yes') {
+            $dixon_visibility = 'always';
+        } else {
+            $dixon_visibility = 'disabled';
+        }
+    }
+    
+    // Dixon visibility radio buttons
+    woocommerce_wp_radio( array(
+        'id' => '_club420_dixon_visibility',
+        'value' => $dixon_visibility,
+        'options' => array(
+            'always' => 'Always visible to Dixon customers',
+            'scheduled' => 'Visible only during scheduled times',
+            'disabled' => 'Not available to Dixon customers'
+        )
     ));
     
-    // Dixon URL Field
+    // Dixon URL Field (unchanged)
     woocommerce_wp_text_input(array(
         'id' => '_club420_dixon_url',
         'label' => 'Dixon Store URL',
         'type' => 'url',
         'placeholder' => 'https://club420.com/menu/highway-80/categories/...'
     ));
+    
+    // Dixon Schedule Section (shows when scheduled is selected)
+    echo '<div id="dixon_schedule_section" style="display: none; background: #e8f4fd; border: 1px solid #0073aa; border-radius: 4px; padding: 15px; margin-top: 10px;">';
+    echo '<h6 style="margin: 0 0 10px 0; color: #0073aa;">📅 Dixon Store Schedule</h6>';
+    echo '<p style="font-size: 12px; color: #666; margin-bottom: 10px;">Times are in Los Angeles timezone (your business timezone)</p>';
+    
+    // Dixon Start Date/Time
+    woocommerce_wp_text_input(array(
+        'id' => '_club420_dixon_schedule_start',
+        'label' => '🟢 START: Show product from',
+        'type' => 'datetime-local',
+        'custom_attributes' => array(
+            'step' => '60'
+        ),
+        'description' => 'Date and time when product becomes visible'
+    ));
+    
+    // Dixon End Date/Time
+    woocommerce_wp_text_input(array(
+        'id' => '_club420_dixon_schedule_end',
+        'label' => '🔴 END: Hide product after',
+        'type' => 'datetime-local',
+        'custom_attributes' => array(
+            'step' => '60'
+        ),
+        'description' => 'Date and time when product becomes hidden'
+    ));
+    
+    echo '</div>'; // End Dixon schedule section
+    echo '</div>'; // End Dixon store section
+    
+    // Info section
+    echo '<div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px; padding: 10px; margin-top: 15px; font-size: 13px; color: #856404;">';
+    echo '<strong>💡 How Store Visibility Works:</strong><br>';
+    echo '• <strong>Always visible:</strong> Product shows to store customers at all times<br>';
+    echo '• <strong>Scheduled visibility:</strong> Product shows only during specific date/time periods<br>';
+    echo '• <strong>Not available:</strong> Product never shows to store customers<br>';
+    echo '• <strong>Timezone:</strong> All scheduled times are in Los Angeles timezone';
     echo '</div>';
     
-    echo '</div>';
+    echo '</div>'; // End options_group
+    
+    // JavaScript for show/hide schedule sections
+    ?>
+    <script type="text/javascript">
+    jQuery(document).ready(function($) {
+        // Function to show/hide Davis schedule section
+        function toggleDavisSchedule() {
+            var selectedValue = $('input[name="_club420_davis_visibility"]:checked').val();
+            if (selectedValue === 'scheduled') {
+                $('#davis_schedule_section').slideDown();
+            } else {
+                $('#davis_schedule_section').slideUp();
+            }
+        }
+        
+        // Function to show/hide Dixon schedule section
+        function toggleDixonSchedule() {
+            var selectedValue = $('input[name="_club420_dixon_visibility"]:checked').val();
+            if (selectedValue === 'scheduled') {
+                $('#dixon_schedule_section').slideDown();
+            } else {
+                $('#dixon_schedule_section').slideUp();
+            }
+        }
+        
+        // Bind change events to radio buttons
+        $('input[name="_club420_davis_visibility"]').change(toggleDavisSchedule);
+        $('input[name="_club420_dixon_visibility"]').change(toggleDixonSchedule);
+        
+        // Show sections if scheduled is already selected (on page load)
+        toggleDavisSchedule();
+        toggleDixonSchedule();
+    });
+    </script>
+    <?php
 }
 
-// Save the enhanced fields when product is saved
-add_action('woocommerce_process_product_meta', 'club420_save_enhanced_product_fields');
-function club420_save_enhanced_product_fields($post_id) {
-    // Save Davis settings
-    $davis_enabled = isset($_POST['_club420_davis_enabled']) ? 'yes' : 'no';
+// FIXED Enhanced save function - handles radio buttons and scheduling CORRECTLY
+add_action('woocommerce_process_product_meta', 'club420_save_enhanced_product_fields_with_scheduler');
+function club420_save_enhanced_product_fields_with_scheduler($post_id) {
+    
+    // DAVIS STORE - Save radio button and calculate correct enabled status
+    $davis_visibility = isset($_POST['_club420_davis_visibility']) ? sanitize_text_field($_POST['_club420_davis_visibility']) : 'disabled';
+    update_post_meta($post_id, '_club420_davis_visibility', $davis_visibility);
+    
+    // Calculate Davis enabled status based on visibility and schedule
+    $davis_enabled = club420_calculate_enabled_status($post_id, 'davis', $davis_visibility, $_POST);
     update_post_meta($post_id, '_club420_davis_enabled', $davis_enabled);
     
+    // DIXON STORE - Save radio button and calculate correct enabled status  
+    $dixon_visibility = isset($_POST['_club420_dixon_visibility']) ? sanitize_text_field($_POST['_club420_dixon_visibility']) : 'disabled';
+    update_post_meta($post_id, '_club420_dixon_visibility', $dixon_visibility);
+    
+    // Calculate Dixon enabled status based on visibility and schedule
+    $dixon_enabled = club420_calculate_enabled_status($post_id, 'dixon', $dixon_visibility, $_POST);
+    update_post_meta($post_id, '_club420_dixon_enabled', $dixon_enabled);
+    
+    // URL FIELDS (unchanged)
     if (isset($_POST['_club420_davis_url'])) {
         update_post_meta($post_id, '_club420_davis_url', sanitize_text_field($_POST['_club420_davis_url']));
     }
-    
-    // Save Dixon settings
-    $dixon_enabled = isset($_POST['_club420_dixon_enabled']) ? 'yes' : 'no';
-    update_post_meta($post_id, '_club420_dixon_enabled', $dixon_enabled);
-    
     if (isset($_POST['_club420_dixon_url'])) {
         update_post_meta($post_id, '_club420_dixon_url', sanitize_text_field($_POST['_club420_dixon_url']));
     }
+    
+    // DAVIS SCHEDULE - Only save if 'scheduled' is selected
+    if ($davis_visibility === 'scheduled') {
+        club420_save_schedule_times($post_id, 'davis', $_POST);
+    } else {
+        // Clear schedule fields if not using scheduled visibility
+        delete_post_meta($post_id, '_club420_davis_schedule_start');
+        delete_post_meta($post_id, '_club420_davis_schedule_end');
+    }
+    
+    // DIXON SCHEDULE - Only save if 'scheduled' is selected
+    if ($dixon_visibility === 'scheduled') {
+        club420_save_schedule_times($post_id, 'dixon', $_POST);
+    } else {
+        // Clear schedule fields if not using scheduled visibility
+        delete_post_meta($post_id, '_club420_dixon_schedule_start');
+        delete_post_meta($post_id, '_club420_dixon_schedule_end');
+    }
+}
+
+/**
+ * Calculate the correct enabled status based on visibility setting and current time
+ */
+function club420_calculate_enabled_status($post_id, $store, $visibility, $post_data) {
+    switch ($visibility) {
+        case 'always':
+            return 'yes';
+            
+        case 'disabled':
+            return 'no';
+            
+        case 'scheduled':
+            // For scheduled products, check if we're within the time window
+            $start_key = "_club420_{$store}_schedule_start";
+            $end_key = "_club420_{$store}_schedule_end";
+            
+            // Get the schedule times from the form data
+            $start_input = isset($post_data[$start_key]) ? sanitize_text_field($post_data[$start_key]) : '';
+            $end_input = isset($post_data[$end_key]) ? sanitize_text_field($post_data[$end_key]) : '';
+            
+            // If no schedule times provided, disable the product
+            if (empty($start_input) || empty($end_input)) {
+                return 'no';
+            }
+            
+            try {
+                // Convert form times to UTC timestamps
+                $wp_timezone = wp_timezone();
+                $current_utc = current_time('timestamp', true);
+                
+                $start_wp = new DateTime($start_input, $wp_timezone);
+                $start_utc = $start_wp->getTimestamp();
+                
+                $end_wp = new DateTime($end_input, $wp_timezone);
+                $end_utc = $end_wp->getTimestamp();
+                
+                // Check if current time is within the scheduled period
+                if ($current_utc >= $start_utc && $current_utc <= $end_utc) {
+                    return 'yes'; // Within schedule - enable
+                } else {
+                    return 'no';  // Outside schedule - disable
+                }
+                
+            } catch (Exception $e) {
+                return 'no'; // Error = disable for safety
+            }
+            
+        default:
+            return 'no';
+    }
+}
+
+/**
+ * Save schedule times with timezone conversion
+ */
+function club420_save_schedule_times($post_id, $store, $post_data) {
+    $start_key = "_club420_{$store}_schedule_start";
+    $end_key = "_club420_{$store}_schedule_end";
+    
+    // Save start time with timezone conversion
+    if (isset($post_data[$start_key]) && !empty($post_data[$start_key])) {
+        $start_input = sanitize_text_field($post_data[$start_key]);
+        try {
+            $wp_timezone = wp_timezone();
+            $start_wp = new DateTime($start_input, $wp_timezone);
+            $start_utc = $start_wp->getTimestamp();
+            update_post_meta($post_id, $start_key, $start_utc);
+        } catch (Exception $e) {
+            error_log("Club420 Schedule: Invalid {$store} start date format: " . $start_input);
+        }
+    }
+    
+    // Save end time with timezone conversion
+    if (isset($post_data[$end_key]) && !empty($post_data[$end_key])) {
+        $end_input = sanitize_text_field($post_data[$end_key]);
+        try {
+            $wp_timezone = wp_timezone();
+            $end_wp = new DateTime($end_input, $wp_timezone);
+            $end_utc = $end_wp->getTimestamp();
+            update_post_meta($post_id, $end_key, $end_utc);
+        } catch (Exception $e) {
+            error_log("Club420 Schedule: Invalid {$store} end date format: " . $end_input);
+        }
+    }
+}
+
+// Helper function to load and display existing schedule values properly
+add_action('admin_footer', 'club420_load_schedule_field_values');
+function club420_load_schedule_field_values() {
+    global $post, $pagenow;
+    
+    // Only run on product edit pages
+    if ($pagenow !== 'post.php' || !$post || $post->post_type !== 'product') {
+        return;
+    }
+    
+    $wp_timezone = wp_timezone();
+    
+    // Load Davis schedule values and convert from UTC to Los Angeles time for display
+    $davis_start_utc = get_post_meta($post->ID, '_club420_davis_schedule_start', true);
+    $davis_end_utc = get_post_meta($post->ID, '_club420_davis_schedule_end', true);
+    
+    echo '<script type="text/javascript">
+    jQuery(document).ready(function($) {';
+    
+    if ($davis_start_utc) {
+        $davis_start_wp = new DateTime('@' . $davis_start_utc);
+        $davis_start_wp->setTimezone($wp_timezone);
+        $davis_start_display = $davis_start_wp->format('Y-m-d\TH:i');
+        
+        echo '$("#_club420_davis_schedule_start").val("' . esc_js($davis_start_display) . '");';
+    }
+    
+    if ($davis_end_utc) {
+        $davis_end_wp = new DateTime('@' . $davis_end_utc);
+        $davis_end_wp->setTimezone($wp_timezone);
+        $davis_end_display = $davis_end_wp->format('Y-m-d\TH:i');
+        
+        echo '$("#_club420_davis_schedule_end").val("' . esc_js($davis_end_display) . '");';
+    }
+    
+    // Load Dixon schedule values and convert from UTC to Los Angeles time for display
+    $dixon_start_utc = get_post_meta($post->ID, '_club420_dixon_schedule_start', true);
+    $dixon_end_utc = get_post_meta($post->ID, '_club420_dixon_schedule_end', true);
+    
+    if ($dixon_start_utc) {
+        $dixon_start_wp = new DateTime('@' . $dixon_start_utc);
+        $dixon_start_wp->setTimezone($wp_timezone);
+        $dixon_start_display = $dixon_start_wp->format('Y-m-d\TH:i');
+        
+        echo '$("#_club420_dixon_schedule_start").val("' . esc_js($dixon_start_display) . '");';
+    }
+    
+    if ($dixon_end_utc) {
+        $dixon_end_wp = new DateTime('@' . $dixon_end_utc);
+        $dixon_end_wp->setTimezone($wp_timezone);
+        $dixon_end_display = $dixon_end_wp->format('Y-m-d\TH:i');
+        
+        echo '$("#_club420_dixon_schedule_end").val("' . esc_js($dixon_end_display) . '");';
+    }
+    
+    echo '});
+    </script>';
 }
 ```
 
-### **Snippet 3: CLUB420 Admin Store Filter**
-**Purpose**: Admin products page filtering and visual indicators  
-**Location**: WordPress Admin → Code Snippets → Add New  
-**Status**: ✅ ACTIVE - Production Ready
-
+### SNIPPET 3: Admin Store Filter
 ```php
 // CLUB420 Admin Store Filter - Inline Dropdown Version
 // Replace the previous "CLUB420 Admin Store Filter" snippet with this
@@ -386,11 +1015,7 @@ function club420_display_store_columns($column, $post_id) {
 }
 ```
 
-### **Snippet 4: WooCommerce Auto-Tymber-Button Generator**
-**Purpose**: Automatic button generation from custom fields  
-**Location**: WordPress Admin → Code Snippets → Add New  
-**Status**: ✅ ACTIVE - Production Ready
-
+### SNIPPET 4: Auto-Button Generator
 ```php
 // PHP Snippet #4: FIXED High-Performance CLUB420 Auto-Button Generation
 // FLASH ISSUE RESOLVED - Never shows both buttons simultaneously
@@ -632,510 +1257,638 @@ function club420_performance_monitor() {
 club420_performance_monitor();
 ```
 
-### **Snippet 5: Club420 WooCommerce Native Carousel - YITH COMPATIBLE**
-**Purpose**: WooCommerce native carousel with YITH badge support  
-**Location**: WordPress Admin → Code Snippets → Add New  
-**Status**: ✅ ACTIVE - YITH badges working, styling needs refinement
-
+### SNIPPET 5: BlazeSlider Carousel
 ```php
-// Snippet 5: Club420 WooCommerce Native Carousel - YITH COMPATIBLE - COMPLETE
-// REPLACES the custom carousel system completely
+// Club420 BlazeSlider - REAL-TIME SCHEDULING (CLEAN PRODUCTION VERSION)
+add_shortcode('club420_deals_carousel', 'club420_blazeslider_adaptation');
 
-add_shortcode('club420_deals_carousel', 'club420_native_deals_carousel');
-
-function club420_native_deals_carousel($atts) {
+function club420_blazeslider_adaptation($atts) {
+    // FORCE fresh data for ALL users - treat non-logged-in like logged-in for cache bypass
+    $original_user = wp_get_current_user();
+    $was_logged_out = !is_user_logged_in();
+    
+    if ($was_logged_out) {
+        // Temporarily fake being logged in to bypass caching
+        wp_set_current_user(1);
+    }
+    
     $atts = shortcode_atts(array(
         'store' => 'current'
     ), $atts);
     
-    // Category configuration - same as before
     $categories = array(
-        'flower' => array(
-            'name' => 'Flower Deals',
-            'slug' => 'flower'
-        ),
-        'preroll' => array(
-            'name' => 'Preroll Deals', 
-            'slug' => 'preroll'
-        ),
-        'cartridge' => array(
-            'name' => 'Cartridge Deals',
-            'slug' => 'cartridge'
-        ),
-        'edible' => array(
-            'name' => 'Edible Deals',
-            'slug' => 'edible'
-        ),
-        'extract' => array(
-            'name' => 'Extract Deals',
-            'slug' => 'extract'
-        )
+        'flower' => array('name' => 'Flower Deals', 'slug' => 'flower'),
+        'preroll' => array('name' => 'Preroll Deals', 'slug' => 'preroll'),
+        'cartridge' => array('name' => 'Cartridge Deals', 'slug' => 'cartridge'),
+        'edible' => array('name' => 'Edible Deals', 'slug' => 'edible'),
+        'extract' => array('name' => 'Extract Deals', 'slug' => 'extract')
     );
     
-    $output = '<div class="club420-native-carousel">';
+    static $club420_slider_id = 1;
+    $output = '';
     
-    // Generate each category section with WooCommerce native shortcodes
     foreach ($categories as $cat_key => $category) {
-        $output .= '<div class="club420-category-section" data-category="' . esc_attr($cat_key) . '">';
-        $output .= '<h3 class="club420-category-title">' . esc_html($category['name']) . '</h3>';
-        $output .= '<div class="club420-products-container">';
-        $output .= '<div class="club420-products-viewport">';
-        $output .= '<div class="club420-products-track" data-category="' . esc_attr($cat_key) . '">';
+        $output .= '<h3 style="font-size: 28px; font-weight: 700; margin: 40px 0 30px 0; color: #333;">' . esc_html($category['name']) . '</h3>';
+        $output .= '<div class="blaze-slider" id="club420_slider'.$club420_slider_id.'" data-category="' . esc_attr($cat_key) . '">';
+        $output .= '<div class="my-structure">';
+        $output .= '<span class="blaze-prev" aria-label="Go to previous slide">';
+        $output .= '<svg width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">';
+        $output .= '<path d="M15 18L9 12L15 6" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+        $output .= '</svg></span>';
+        $output .= '<span class="blaze-next" aria-label="Go to next slide">';
+        $output .= '<svg width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">';
+        $output .= '<path d="M9 18L15 12L9 6" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+        $output .= '</svg></span>';
+        $output .= '</div>';
+        $output .= '<div class="blaze-container"><div class="blaze-track-container"><div class="club420-blaze-track blaze-track">';
         
-        // YITH SOLUTION: Use WooCommerce native shortcode
-        $wc_shortcode = '[products category="' . $category['slug'] . '" limit="12" columns="12" orderby="date" order="DESC"]';
-        $output .= do_shortcode($wc_shortcode);
+        // Check current store filter
+        $store_location = isset($_GET['store_filter']) ? sanitize_text_field($_GET['store_filter']) : 'all';
         
-        $output .= '</div>';
-        $output .= '</div>';
-        $output .= '</div>';
-        // Keep your existing arrows - NO CHANGES
-        $output .= '<button class="club420-nav-btn club420-nav-prev" data-category="' . esc_attr($cat_key) . '"></button>';
-        $output .= '<button class="club420-nav-btn club420-nav-next" data-category="' . esc_attr($cat_key) . '"></button>';
-        $output .= '</div>';
+        // Get products with basic query
+        $args = array(
+            'post_type' => 'product',
+            'posts_per_page' => 50,
+            'post_status' => 'publish',
+            'tax_query' => array(
+                array(
+                    'taxonomy' => 'product_cat',
+                    'field'    => 'slug',
+                    'terms'    => $category['slug'],
+                )
+            ),
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'club420_carousel_query' => true,
+            'cache_results' => false,
+            'update_post_meta_cache' => false,
+            'update_post_term_cache' => false
+        );
+        
+        // Add basic store availability filter
+        if ($store_location !== 'all') {
+            $url_key = ($store_location === 'davis') ? '_club420_davis_url' : '_club420_dixon_url';
+            $args['meta_query'] = array(
+                array(
+                    'key' => $url_key,
+                    'value' => '',
+                    'compare' => '!='
+                )
+            );
+        }
+        
+        $products = new WP_Query($args);
+        $displayed_count = 0;
+        
+        if ($products->have_posts()) {
+            while ($products->have_posts() && $displayed_count < 12) {
+                $products->the_post();
+                global $product;
+                
+                if (!$product || !$product->is_visible()) {
+                    continue;
+                }
+                
+                $product_id = get_the_ID();
+                
+                // Check if product should show using real-time scheduling
+                if ($store_location !== 'all') {
+                    // FORCE fresh check for non-logged-in users
+                    if (!is_user_logged_in()) {
+                        clean_post_cache($product_id);
+                        wp_cache_delete($product_id, 'posts');
+                    }
+                    
+                    $should_show = club420_should_product_show($product_id, $store_location);
+                    
+                    if (!$should_show) {
+                        continue;
+                    }
+                }
+                
+                // Product passed all checks - display it
+                $output .= '<div class="post_card">';
+                $output .= '<a href="' . esc_url(get_permalink()) . '" style="position: relative;">';
+                $output .= woocommerce_get_product_thumbnail();
+                $output .= club420_get_yith_badge_html(get_the_ID());
+                $output .= '</a>';
+                $output .= '<span class="wwo_card_details">';
+                $output .= '<a class="p_title" href="' . esc_url(get_permalink()) . '">' . get_the_title() . '</a>';
+                $output .= '</span>';
+                $output .= '</div>';
+                
+                $displayed_count++;
+            }
+            wp_reset_postdata();
+        }
+        
+        $output .= '</div></div></div></div>';
+        $club420_slider_id++;
     }
     
-    $output .= '</div>';
+    // Restore original user state
+    if ($was_logged_out) {
+        wp_set_current_user(0);
+    }
     
     return $output;
 }
 
-// CSS to transform WooCommerce grid into horizontal carousel
-function club420_native_carousel_styles() {
+/**
+ * Real-time scheduling logic - reads directly from database
+ */
+function club420_should_product_show($product_id, $store_location) {
+    global $wpdb;
+    
+    // Read scheduling data directly from database (bypasses all caching)
+    $visibility_key = "_club420_{$store_location}_visibility";
+    $enabled_key = "_club420_{$store_location}_enabled";
+    $start_key = "_club420_{$store_location}_schedule_start";
+    $end_key = "_club420_{$store_location}_schedule_end";
+    
+    $meta_data = $wpdb->get_results($wpdb->prepare("
+        SELECT meta_key, meta_value 
+        FROM {$wpdb->postmeta} 
+        WHERE post_id = %d 
+        AND meta_key IN (%s, %s, %s, %s)
+    ", $product_id, $visibility_key, $enabled_key, $start_key, $end_key), ARRAY_A);
+    
+    $visibility = '';
+    $enabled = '';
+    $start_time = '';
+    $end_time = '';
+    
+    foreach ($meta_data as $meta) {
+        switch ($meta['meta_key']) {
+            case $visibility_key:
+                $visibility = $meta['meta_value'];
+                break;
+            case $enabled_key:
+                $enabled = $meta['meta_value'];
+                break;
+            case $start_key:
+                $start_time = $meta['meta_value'];
+                break;
+            case $end_key:
+                $end_time = $meta['meta_value'];
+                break;
+        }
+    }
+    
+    $current_utc_time = current_time('timestamp', true);
+    
+    switch ($visibility) {
+        case 'always':
+            return true;
+            
+        case 'disabled':
+            return false;
+            
+        case 'scheduled':
+            if (!$start_time || !$end_time) {
+                return false;
+            }
+            return ($current_utc_time >= $start_time && $current_utc_time <= $end_time);
+            
+        default:
+            return ($enabled === 'yes');
+    }
+}
+
+function club420_get_yith_badge_html($product_id) {
+    if (!function_exists('yith_wcbm_get_product_badges')) {
+        return '';
+    }
+    
+    $badges = yith_wcbm_get_product_badges($product_id);
+    
+    if (empty($badges)) {
+        return '';
+    }
+    
+    $badge_html = '';
+    foreach ($badges as $badge) {
+        if (isset($badge['text']) && !empty($badge['text'])) {
+            $badge_html .= '<span class="club420-yith-badge">';
+            $badge_html .= esc_html($badge['text']);
+            $badge_html .= '</span>';
+        }
+    }
+    
+    return $badge_html;
+}
+
+function club420_blazeslider_styles() {
     if (!is_front_page() && !is_shop() && !is_product_category()) {
         return;
     }
     
     echo '<style>
-.club420-native-carousel {
-    margin: 20px 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    width: 100%;
-    max-width: 100%;
-}
+.blaze-slider{--slides-to-show:4;--slide-gap:20px;direction:ltr}
+.blaze-container{position:relative}
+.blaze-track-container{overflow:hidden}
+.blaze-track{will-change:transform;touch-action:pan-y;display:flex;gap:var(--slide-gap);--slide-width:calc((100% - (var(--slides-to-show) - 1) * var(--slide-gap)) / var(--slides-to-show));box-sizing:border-box}
+.blaze-track>*{box-sizing:border-box;width:var(--slide-width);flex-shrink:0}
 
-.club420-category-section {
-    margin-bottom: 20px;
-    width: 100%;
-    max-width: 100%;
+.blaze-slider {
     position: relative;
-    padding: 40px 0 20px 0;
+    margin: 0 10px;
 }
 
-.club420-category-title {
-    font-size: 24px;
-    font-weight: 700;
-    margin: 0 0 20px 0;
-    color: #333;
-    text-align: left;
-    padding: 0;
-}
-
-/* Transform WooCommerce grid into horizontal carousel */
-.club420-products-container {
-    position: relative;
-    width: calc(100% - 100px);
-    display: block;
-    overflow: hidden;
-    margin: 0 auto;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-.club420-products-viewport {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-}
-
-.club420-products-track {
-    display: flex !important;
-    gap: 15px;
-    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    will-change: transform;
-    padding: 10px 0;
-}
-
-/* Transform WooCommerce products into carousel items */
-.club420-products-track .products {
-    display: flex !important;
-    gap: 15px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    list-style: none !important;
-}
-
-.club420-products-track .product {
-    flex: 0 0 170px !important;
-    width: 170px !important;
-    min-width: 170px !important;
-    max-width: 170px !important;
-    margin: 0 !important;
-    padding: 20px 0 !important;
-}
-
-/* Keep your exact arrow styling - NO CHANGES */
-.club420-nav-btn {
+.my-structure {
+    pointer-events: none;
     position: absolute;
-    font-size: 0;
-    line-height: 0;
-    padding: 0;
-    color: transparent;
-    outline: none;
-    background: transparent;
-    border: none;
+    inset: -20px -40px;
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.my-structure span {
+    pointer-events: all;
     cursor: pointer;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 100;
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    vertical-align: middle;
+    transition: all .3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
 }
 
-.club420-nav-btn:before {
-    font-family: ETmodules;
-    color: #000;
-    background: transparent;
-    opacity: 1;
-    font-size: 46px;
-    vertical-align: middle;
-    text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    line-height: 1;
+.my-structure svg {
+    transition: opacity 0.3s ease;
 }
 
-.club420-nav-btn:hover:before {
-    opacity: 0.8;
+.my-structure span:hover svg {
+    opacity: 0.7;
 }
 
-.club420-nav-prev:before {
-    content: "\\34";
-}
-
-.club420-nav-next:before {
-    content: "\\35";
-}
-
-.club420-nav-prev {
-    left: -50px;
-}
-
-.club420-nav-next {
-    right: -50px;
-}
-
-/* YITH badges - MINIMAL interference, let YITH handle everything */
-.club420-products-track .yith-wcbm-badge {
-    /* Only ensure positioning works in carousel context */
-    position: absolute !important;
-    z-index: 10 !important;
-    /* Let YITH handle ALL styling - don\'t override anything else */
-}
-
-/* Remove any potential interference from carousel containers */
-.club420-products-track .container-image-and-badge {
+.club420-blaze-track .post_card {
     position: relative;
+    max-width: 500px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* Don\'t let carousel CSS affect badge content */
-.club420-products-track .yith-wcbm-badge * {
-    /* Reset any potential carousel inheritance */
-    font-size: revert !important;
-    line-height: revert !important;
-    padding: revert !important;
-    margin: revert !important;
-    color: revert !important;
+.club420-blaze-track .post_card:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
-/* Responsive - keep your breakpoints */
-@media (max-width: 1200px) {
-    .club420-products-track .product {
-        flex: 0 0 160px !important;
-        width: 160px !important;
-        min-width: 160px !important;
-        max-width: 160px !important;
+.club420-blaze-track .post_card .container-image-and-badge img {
+    width: 92%;
+    height: auto;
+    margin: 18px auto 8px auto;
+    object-fit: contain;
+}
+
+.club420-blaze-track .post_card .container-image-and-badge {
+    text-align: center;
+}
+
+.club420-blaze-track .wwo_card_details {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 15px 15px 15px;
+}
+
+.club420-blaze-track .p_title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    text-decoration: none;
+    color: #2c2c2c;
+    text-align: left;
+    line-height: 1.3;
+}
+
+.club420-yith-badge {
+    z-index: 3;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+    .blaze-slider {
+        --slides-to-show: 2;
+        margin: 0 10px;
     }
     
-    .club420-products-container {
-        width: calc(100% - 80px);
+    .my-structure {
+        inset: -15px -35px;
     }
 }
 
-@media (max-width: 980px) {
-    .club420-products-track .product {
-        flex: 0 0 150px !important;
-        width: 150px !important;
-        min-width: 150px !important;
-        max-width: 150px !important;
+@media (max-width: 500px) {
+    .blaze-slider {
+        --slides-to-show: 1.5;
+        margin: 0 15px;
     }
     
-    .club420-products-container {
-        width: calc(100% - 70px);
+    .my-structure {
+        inset: -10px -35px;
     }
     
-    .club420-nav-prev {
-        left: -35px;
+    .my-structure span {
+        width: 35px;
+        height: 35px;
     }
     
-    .club420-nav-next {
-        right: -35px;
-    }
-}
-
-@media (max-width: 767px) {
-    .club420-products-track .product {
-        flex: 0 0 140px !important;
-        width: 140px !important;
-        min-width: 140px !important;
-        max-width: 140px !important;
+    .my-structure svg {
+        width: 30px;
+        height: 30px;
     }
     
-    .club420-products-container {
-        width: calc(100% - 50px);
-    }
-    
-    .club420-nav-prev {
-        left: -25px;
-    }
-    
-    .club420-nav-next {
-        right: -25px;
+    .club420-blaze-track .post_card .container-image-and-badge img {
+        width: 94%;
+        margin: 12px auto 8px auto;
     }
 }
 </style>';
 }
-add_action('wp_head', 'club420_native_carousel_styles', 25);
+add_action('wp_head', 'club420_blazeslider_styles', 30);
 
-// Keep your exact JavaScript navigation - minimal changes
-function club420_native_carousel_scripts() {
+function club420_blazeslider_scripts() {
     if (!is_front_page() && !is_shop() && !is_product_category()) {
         return;
     }
     
     echo '<script>
+var BlazeSlider=function(){"use strict";const t="start";class e{constructor(t,e){this.config=e,this.totalSlides=t,this.isTransitioning=!1,n(this,t,e)}next(t=1){if(this.isTransitioning||this.isStatic)return;const{stateIndex:e}=this;let n=0,i=e;for(let e=0;e<t;e++){const t=this.states[i];n+=t.next.moveSlides,i=t.next.stateIndex}return i!==e?(this.stateIndex=i,[e,n]):void 0}prev(t=1){if(this.isTransitioning||this.isStatic)return;const{stateIndex:e}=this;let n=0,i=e;for(let e=0;e<t;e++){const t=this.states[i];n+=t.prev.moveSlides,i=t.prev.stateIndex}return i!==e?(this.stateIndex=i,[e,n]):void 0}}function n(t,e,n){t.stateIndex=0,function(t){const{slidesToScroll:e,slidesToShow:n}=t.config,{totalSlides:i,config:s}=t;if(i<n&&(s.slidesToShow=i),!(i<=n)&&(e>n&&(s.slidesToScroll=n),i<e+n)){const t=i-n;s.slidesToScroll=t}}(t),t.isStatic=e<=n.slidesToShow,t.states=function(t){const{totalSlides:e}=t,{loop:n}=t.config,i=function(t){const{slidesToShow:e,slidesToScroll:n,loop:i}=t.config,{isStatic:s,totalSlides:o}=t,r=[],a=o-1;for(let t=0;t<o;t+=n){const n=t+e-1;if(n>a){if(!i){const t=a-e+1,n=r.length-1;(0===r.length||r.length>0&&r[n][0]!==t)&&r.push([t,a]);break}{const e=n-o;r.push([t,e])}}else r.push([t,n]);if(s)break}return r}(t),s=[],o=i.length-1;for(let t=0;t<i.length;t++){let r,a;n?(r=t===o?0:t+1,a=0===t?o:t-1):(r=t===o?o:t+1,a=0===t?0:t-1);const l=i[t][0],c=i[r][0],d=i[a][0];let u=c-l;c<l&&(u+=e);let f=l-d;d>l&&(f+=e),s.push({page:i[t],next:{stateIndex:r,moveSlides:u},prev:{stateIndex:a,moveSlides:f}})}return s}(t)}function i(t){if(t.onSlideCbs){const e=t.states[t.stateIndex],[n,i]=e.page;t.onSlideCbs.forEach((e=>e(t.stateIndex,n,i)))}}function s(t){t.offset=-1*t.states[t.stateIndex].page[0],o(t),i(t)}function o(t){const{track:e,offset:n,dragged:i}=t;e.style.transform=0===n?`translate3d(${i}px,0px,0px)`:`translate3d(  calc( ${i}px + ${n} * (var(--slide-width) + ${t.config.slideGap})),0px,0px)`}function r(t){t.track.style.transitionDuration=`${t.config.transitionDuration}ms`}function a(t){t.track.style.transitionDuration="0ms"}const l=10,c=()=>"ontouchstart"in window;function d(t){const e=this,n=e.slider;if(!n.isTransitioning){if(n.dragged=0,e.isScrolled=!1,e.startMouseClientX="touches"in t?t.touches[0].clientX:t.clientX,!("touches"in t)){(t.target||e).setPointerCapture(t.pointerId)}a(n),p(e,"addEventListener")}}function u(t){const e=this,n="touches"in t?t.touches[0].clientX:t.clientX,i=e.slider.dragged=n-e.startMouseClientX,s=Math.abs(i);s>5&&(e.slider.isDragging=!0),s>15&&t.preventDefault(),e.slider.dragged=i,o(e.slider),!e.isScrolled&&e.slider.config.loop&&i>l&&(e.isScrolled=!0,e.slider.prev())}function f(){const t=this,e=t.slider.dragged;t.slider.isDragging=!1,p(t,"removeEventListener"),t.slider.dragged=0,o(t.slider),r(t.slider),t.isScrolled||(e<-1*l?t.slider.next():e>l&&t.slider.prev())}const h=t=>t.preventDefault();function p(t,e){t[e]("contextmenu",f),c()?(t[e]("touchend",f),t[e]("touchmove",u)):(t[e]("pointerup",f),t[e]("pointermove",u))}const g={slideGap:"20px",slidesToScroll:1,slidesToShow:1,loop:!0,enableAutoplay:!1,stopAutoplayOnInteraction:!0,autoplayInterval:3e3,autoplayDirection:"to left",enablePagination:!0,transitionDuration:300,transitionTimingFunction:"ease",draggable:!0};function v(t){const e={...g};for(const n in t)if(window.matchMedia(n).matches){const i=t[n];for(const t in i)e[t]=i[t]}return e}function S(){const t=this.index,e=this.slider,n=e.stateIndex,i=e.config.loop,s=Math.abs(t-n),o=e.states.length-s,r=s>e.states.length/2&&i;t>n?r?e.prev(o):e.next(s):r?e.next(o):e.prev(s)}function m(t,e=t.config.transitionDuration){t.isTransitioning=!0,setTimeout((()=>{t.isTransitioning=!1}),e)}function x(e,n){const i=e.el.classList,s=e.stateIndex,o=e.paginationButtons;e.config.loop||(0===s?i.add(t):i.remove(t),s===e.states.length-1?i.add("end"):i.remove("end")),o&&e.config.enablePagination&&(o[n].classList.remove("active"),o[s].classList.add("active"))}function y(e,i){const s=i.track;i.slides=s.children,i.offset=0,i.config=e,n(i,i.totalSlides,e),e.loop||i.el.classList.add(t),e.enableAutoplay&&!e.loop&&(e.enableAutoplay=!1),s.style.transitionProperty="transform",s.style.transitionTimingFunction=i.config.transitionTimingFunction,s.style.transitionDuration=`${i.config.transitionDuration}ms`;const{slidesToShow:r,slideGap:a}=i.config;i.el.style.setProperty("--slides-to-show",r+""),i.el.style.setProperty("--slide-gap",a),i.isStatic?i.el.classList.add("static"):e.draggable&&function(t){const e=t.track;e.slider=t;const n=c()?"touchstart":"pointerdown";e.addEventListener(n,d),e.addEventListener("click",(e=>{(t.isTransitioning||t.isDragging)&&(e.preventDefault(),e.stopImmediatePropagation(),e.stopPropagation())}),{capture:!0}),e.addEventListener("dragstart",h)}(i),function(t){if(!t.config.enablePagination||t.isStatic)return;const e=t.el.querySelector(".blaze-pagination");if(!e)return;t.paginationButtons=[];const n=t.states.length;for(let i=0;i<n;i++){const s=document.createElement("button");t.paginationButtons.push(s),s.textContent="",s.ariaLabel=`${i+1} of ${n}`,e.append(s),s.slider=t,s.index=i,s.onclick=S}t.paginationButtons[0].classList.add("active")}(i),function(t){const e=t.config;if(!e.enableAutoplay)return;const n="to left"===e.autoplayDirection?"next":"prev";t.autoplayTimer=setInterval((()=>{t[n]()}),e.autoplayInterval),e.stopAutoplayOnInteraction&&t.el.addEventListener(c()?"touchstart":"mousedown",(()=>{clearInterval(t.autoplayTimer)}),{once:!0})}(i),function(t){const e=t.el.querySelector(".blaze-prev"),n=t.el.querySelector(".blaze-next");e&&(e.onclick=()=>{t.prev()}),n&&(n.onclick=()=>{t.next()})}(i),o(i)}return class extends e{constructor(t,e){const n=t.querySelector(".blaze-track"),i=n.children,s=e?v(e):{...g};super(i.length,s),this.config=s,this.el=t,this.track=n,this.slides=i,this.offset=0,this.dragged=0,this.isDragging=!1,this.el.blazeSlider=this,this.passedConfig=e;const o=this;n.slider=o,y(s,o);let r=!1,a=0;window.addEventListener("resize",(()=>{if(0===a)return void(a=window.innerWidth);const t=window.innerWidth;a!==t&&(a=t,r||(r=!0,setTimeout((()=>{o.refresh(),r=!1}),200)))}))}next(t){if(this.isTransitioning)return;const e=super.next(t);if(!e)return void m(this);const[n,l]=e;x(this,n),m(this),function(t,e){const n=requestAnimationFrame;t.config.loop?(t.offset=-1*e,o(t),setTimeout((()=>{!function(t,e){for(let n=0;n<e;n++)t.track.append(t.slides[0])}(t,e),a(t),t.offset=0,o(t),n((()=>{n((()=>{r(t),i(t)}))}))}),t.config.transitionDuration)):s(t)}(this,l)}prev(t){if(this.isTransitioning)return;const e=super.prev(t);if(!e)return void m(this);const[n,l]=e;x(this,n),m(this),function(t,e){const n=requestAnimationFrame;if(t.config.loop){a(t),t.offset=-1*e,o(t),function(t,e){const n=t.slides.length;for(let i=0;i<e;i++){const e=t.slides[n-1];t.track.prepend(e)}}(t,e);const s=()=>{n((()=>{r(t),n((()=>{t.offset=0,o(t),i(t)}))}))};t.isDragging?c()?t.track.addEventListener("touchend",s,{once:!0}):t.track.addEventListener("pointerup",s,{once:!0}):n(s)}else s(t)}(this,l)}stopAutoplay(){clearInterval(this.autoplayTimer)}destroy(){this.track.removeEventListener(c()?"touchstart":"pointerdown",d),this.stopAutoplay(),this.paginationButtons?.forEach((t=>t.remove())),this.el.classList.remove("static"),this.el.classList.remove(t)}refresh(){const t=this.passedConfig?v(this.passedConfig):{...g};this.destroy(),y(t,this)}onSlide(t){return this.onSlideCbs||(this.onSlideCbs=new Set),this.onSlideCbs.add(t),()=>this.onSlideCbs.delete(t)}}}();
+
 document.addEventListener("DOMContentLoaded", function() {
-    console.log("Club420: YITH COMPATIBLE Native Carousel initializing...");
-    
-    let carouselInstances = [];
-    
     setTimeout(function() {
-        initializeCarousels();
-        setupResizeHandler();
-    }, 1000); // Slight delay for WooCommerce to render
-    
-    function initializeCarousels() {
-        const carousels = document.querySelectorAll(".club420-products-track");
-        console.log("Club420: Found", carousels.length, "native carousels");
+        const sliders = document.querySelectorAll("[id^=\"club420_slider\"]");
         
-        carouselInstances = [];
-        
-        carousels.forEach(function(track, index) {
-            const carouselInstance = createCarousel(track);
-            if (carouselInstance) {
-                carouselInstances.push(carouselInstance);
-            }
+        sliders.forEach(function(slider) {
+            new BlazeSlider(slider, {
+                all: {
+                    enableAutoplay: true,
+                    autoplayInterval: 3000,
+                    autoplayDirection: "to left",
+                    stopAutoplayOnInteraction: true,
+                    transitionDuration: 300,
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                    slideGap: "20px",
+                    loop: true,
+                    enablePagination: false,
+                    transitionTimingFunction: "ease",
+                    draggable: true
+                },
+                "(max-width: 900px)": {
+                    slidesToShow: 2,
+                    autoplayInterval: 4000,
+                },
+                "(max-width: 500px)": {
+                    slidesToShow: 1.5,
+                    autoplayInterval: 4000,
+                },
+            });
         });
         
-        console.log("Club420: YITH compatible carousel initialization complete");
-    }
-    
-    function createCarousel(track) {
-        const category = track.dataset.category;
-        const viewport = track.parentElement;
-        const container = viewport.parentElement;
-        const section = container.parentElement;
-        const prevBtn = section.querySelector(".club420-nav-prev");
-        const nextBtn = section.querySelector(".club420-nav-next");
-        
-        if (!prevBtn || !nextBtn) {
-            console.warn("Missing buttons for category:", category);
-            return null;
-        }
-        
-        // Find the actual products list inside WooCommerce output
-        const productsList = track.querySelector(".products");
-        if (!productsList) {
-            console.warn("No WooCommerce products found for:", category);
-            return null;
-        }
-        
-        const carousel = {
-            track: productsList, // Use WooCommerce products list
-            viewport: viewport,
-            container: container,
-            section: section,
-            prevBtn: prevBtn,
-            nextBtn: nextBtn,
-            category: category,
-            currentOffset: 0,
-            autoplayTimer: null,
-            autoplaySpeed: 4000,
-            isAutoplayPaused: false,
-            
-            calculateDimensions: function() {
-                this.containerWidth = this.container.clientWidth;
-                
-                const screenWidth = window.innerWidth;
-                if (screenWidth >= 1200) {
-                    this.cardWidth = 170;
-                    this.cardGap = 15;
-                } else if (screenWidth >= 980) {
-                    this.cardWidth = 160;
-                    this.cardGap = 15;
-                } else if (screenWidth >= 767) {
-                    this.cardWidth = 150;
-                    this.cardGap = 15;
-                } else {
-                    this.cardWidth = 140;
-                    this.cardGap = 15;
-                }
-                
-                this.visibleCards = Math.floor(this.containerWidth / (this.cardWidth + this.cardGap));
-                this.totalCards = this.track.children.length;
-                this.scrollDistance = this.cardWidth + this.cardGap;
-                this.maxOffset = Math.max(0, (this.totalCards - this.visibleCards) * this.scrollDistance);
-            },
-            
-            updateButtons: function() {
-                if (this.currentOffset <= 0) {
-                    this.prevBtn.style.opacity = "0.3";
-                } else {
-                    this.prevBtn.style.opacity = "1";
-                }
-                
-                if (this.currentOffset >= this.maxOffset) {
-                    this.nextBtn.style.opacity = "0.3";
-                } else {
-                    this.nextBtn.style.opacity = "1";
-                }
-            },
-            
-            scrollTo: function(offset) {
-                this.currentOffset = Math.max(0, Math.min(this.maxOffset, offset));
-                this.track.style.transform = "translateX(-" + this.currentOffset + "px)";
-                this.updateButtons();
-            },
-            
-            scrollNext: function() {
-                if (this.currentOffset < this.maxOffset) {
-                    this.scrollTo(this.currentOffset + this.scrollDistance);
-                } else {
-                    this.scrollTo(0);
-                }
-            },
-            
-            scrollPrev: function() {
-                if (this.currentOffset > 0) {
-                    this.scrollTo(this.currentOffset - this.scrollDistance);
-                }
-            },
-            
-            startAutoplay: function() {
-                if (this.totalCards <= this.visibleCards) return;
-                
-                this.stopAutoplay();
-                this.autoplayTimer = setInterval(() => {
-                    if (!this.isAutoplayPaused) {
-                        this.scrollNext();
-                    }
-                }, this.autoplaySpeed);
-            },
-            
-            stopAutoplay: function() {
-                if (this.autoplayTimer) {
-                    clearInterval(this.autoplayTimer);
-                    this.autoplayTimer = null;
-                }
-            },
-            
-            handleResize: function() {
-                this.calculateDimensions();
-                
-                if (this.currentOffset > this.maxOffset) {
-                    this.scrollTo(this.maxOffset);
-                } else {
-                    this.updateButtons();
-                }
-                
-                if (this.totalCards > this.visibleCards) {
-                    this.startAutoplay();
-                } else {
-                    this.stopAutoplay();
-                }
-            },
-            
-            init: function() {
-                this.calculateDimensions();
-                
-                this.prevBtn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    this.stopAutoplay();
-                    this.scrollPrev();
-                    setTimeout(() => this.startAutoplay(), 1000);
-                });
-                
-                this.nextBtn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    this.stopAutoplay();
-                    this.scrollNext();
-                    setTimeout(() => this.startAutoplay(), 1000);
-                });
-                
-                this.section.addEventListener("mouseenter", () => {
-                    this.isAutoplayPaused = true;
-                });
-                
-                this.section.addEventListener("mouseleave", () => {
-                    this.isAutoplayPaused = false;
-                });
-                
-                this.updateButtons();
-                
-                if (this.totalCards > this.visibleCards) {
-                    this.startAutoplay();
-                }
-                
-                console.log("YITH compatible carousel initialized for", this.category);
-            }
-        };
-        
-        carousel.init();
-        return carousel;
-    }
-    
-    function setupResizeHandler() {
-        let resizeTimeout;
-        
-        window.addEventListener("resize", function() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(function() {
-                carouselInstances.forEach(function(carousel) {
-                    carousel.handleResize();
-                });
-            }, 150);
-        });
-    }
+    }, 1500);
 });
 </script>';
 }
-add_action('wp_footer', 'club420_native_carousel_scripts', 25);
+add_action('wp_footer', 'club420_blazeslider_scripts', 25);
 ```
 
----
+### SNIPPET 6: Scheduler Dashboard
+```php
+// Snippet 6: Club420 Product Scheduler Dashboard
+// Clean Production Version - Real-time scheduling monitoring
 
-## 🔄 **SMART AGE GATE JAVASCRIPT SYSTEM - PRODUCTION READY**
+class Club420ProductSchedulerDashboard {
+    
+    public function __construct() {
+        $this->init();
+    }
+    
+    public function init() {
+        // Add dashboard shortcode for monitoring scheduled products
+        add_shortcode('club420_scheduler_dashboard', array($this, 'scheduler_dashboard_shortcode'));
+        
+        // Add admin notice with system status
+        add_action('admin_notices', array($this, 'show_system_status'));
+    }
+    
+    /**
+     * Scheduler dashboard shortcode
+     * Usage: [club420_scheduler_dashboard]
+     */
+    public function scheduler_dashboard_shortcode($atts) {
+        // Only allow admins to run this
+        if (!current_user_can('manage_options')) {
+            return '<p>Access denied. Admin privileges required.</p>';
+        }
+        
+        ob_start();
+        
+        echo '<div style="background: #f9f9f9; border: 1px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 5px; font-family: Arial, sans-serif;">';
+        echo '<h3 style="margin-top: 0;">🕐 Club420 Real-Time Scheduler Dashboard</h3>';
+        
+        // Display current time info
+        $current_wp_time = current_time('mysql');
+        $current_utc_time = current_time('mysql', true);
+        $wp_timezone = wp_timezone();
+        
+        echo '<div style="background: #e7f3ff; padding: 15px; border-radius: 5px; margin-bottom: 20px;">';
+        echo '<p style="margin: 5px 0;"><strong>Current WordPress Time (Los Angeles):</strong> ' . $current_wp_time . '</p>';
+        echo '<p style="margin: 5px 0;"><strong>Current UTC Time:</strong> ' . $current_utc_time . '</p>';
+        echo '<p style="margin: 5px 0;"><strong>WordPress Timezone:</strong> ' . $wp_timezone->getName() . '</p>';
+        echo '<p style="margin: 5px 0; color: green;"><strong>✅ Real-Time Scheduling:</strong> ACTIVE (instant activation)</p>';
+        echo '</div>';
+        
+        // Show system status
+        echo '<div style="background: #d4edda; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #28a745;">';
+        echo '<h4 style="margin-top: 0; color: #155724;">📊 System Status</h4>';
+        echo '<p style="margin: 5px 0; color: #155724;"><strong>Scheduling Method:</strong> Real-time (instant activation)</p>';
+        echo '<p style="margin: 5px 0; color: #155724;"><strong>Cache Management:</strong> WP Engine cache exclusion for scheduled content</p>';
+        echo '<p style="margin: 5px 0; color: #155724;"><strong>Manual Toggles:</strong> Working (instant override)</p>';
+        echo '<p style="margin: 5px 0; color: #155724;"><strong>Scheduled Products:</strong> Activate/deactivate immediately at set times</p>';
+        echo '</div>';
+        
+        // Show ALL scheduled products with their current status
+        $scheduled_products = $this->get_products_with_schedules();
+        echo '<h4>Products with Visibility Settings: ' . count($scheduled_products) . '</h4>';
+        
+        if (!empty($scheduled_products)) {
+            echo '<div style="overflow-x: auto; margin-top: 20px;">';
+            echo '<table style="border-collapse: collapse; width: 100%; font-size: 12px; background: white;">';
+            echo '<thead>';
+            echo '<tr style="background: #0073aa; color: white;">';
+            echo '<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">ID</th>';
+            echo '<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Product Title</th>';
+            echo '<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Davis Settings</th>';
+            echo '<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Davis Status</th>';
+            echo '<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Dixon Settings</th>';
+            echo '<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Dixon Status</th>';
+            echo '</tr>';
+            echo '</thead>';
+            echo '<tbody>';
+            
+            // Show ALL products
+            foreach ($scheduled_products as $product_id) {
+                $product = get_post($product_id);
+                
+                if (!$product) continue;
+                
+                // Get visibility and enabled status for both stores
+                $davis_visibility = get_post_meta($product_id, '_club420_davis_visibility', true);
+                $davis_enabled = get_post_meta($product_id, '_club420_davis_enabled', true);
+                $dixon_visibility = get_post_meta($product_id, '_club420_dixon_visibility', true);
+                $dixon_enabled = get_post_meta($product_id, '_club420_dixon_enabled', true);
+                
+                // Calculate individual store status
+                $davis_status = $this->calculate_store_status($product_id, 'davis', $davis_visibility, $davis_enabled);
+                $dixon_status = $this->calculate_store_status($product_id, 'dixon', $dixon_visibility, $dixon_enabled);
+                
+                // Format settings display
+                $davis_settings = $davis_visibility ? $davis_visibility : 'not set';
+                $dixon_settings = $dixon_visibility ? $dixon_visibility : 'not set';
+                
+                // Add schedule times for scheduled products
+                if ($davis_visibility === 'scheduled') {
+                    $davis_start = get_post_meta($product_id, '_club420_davis_schedule_start', true);
+                    $davis_end = get_post_meta($product_id, '_club420_davis_schedule_end', true);
+                    if ($davis_start && $davis_end) {
+                        $davis_settings .= '<br><small>' . date('m/d H:i', $davis_start) . ' - ' . date('m/d H:i', $davis_end) . '</small>';
+                    }
+                }
+                
+                if ($dixon_visibility === 'scheduled') {
+                    $dixon_start = get_post_meta($product_id, '_club420_dixon_schedule_start', true);
+                    $dixon_end = get_post_meta($product_id, '_club420_dixon_schedule_end', true);
+                    if ($dixon_start && $dixon_end) {
+                        $dixon_settings .= '<br><small>' . date('m/d H:i', $dixon_start) . ' - ' . date('m/d H:i', $dixon_end) . '</small>';
+                    }
+                }
+                
+                echo '<tr style="border-bottom: 1px solid #eee;">';
+                echo '<td style="border: 1px solid #ddd; padding: 8px; font-weight: bold;">' . $product_id . '</td>';
+                echo '<td style="border: 1px solid #ddd; padding: 8px; max-width: 200px; word-wrap: break-word;">' . esc_html($product->post_title) . '</td>';
+                echo '<td style="border: 1px solid #ddd; padding: 8px; text-align: center;">' . $davis_settings . '</td>';
+                echo '<td style="border: 1px solid #ddd; padding: 8px; text-align: center; font-weight: bold;">' . $davis_status . '</td>';
+                echo '<td style="border: 1px solid #ddd; padding: 8px; text-align: center;">' . $dixon_settings . '</td>';
+                echo '<td style="border: 1px solid #ddd; padding: 8px; text-align: center; font-weight: bold;">' . $dixon_status . '</td>';
+                echo '</tr>';
+            }
+            
+            echo '</tbody>';
+            echo '</table>';
+            echo '</div>';
+            
+            echo '<p style="margin-top: 15px;"><em>Showing all ' . count($scheduled_products) . ' products with scheduling settings.</em></p>';
+            echo '<p style="margin-top: 10px; font-size: 11px; color: #666;"><strong>Note:</strong> Status updates in real-time. Refresh page to see latest status.</p>';
+        } else {
+            echo '<p style="background: #fff3cd; padding: 15px; border-radius: 5px; border-left: 4px solid #ffc107;">No products with scheduling settings found. Set up scheduling on products to see them here.</p>';
+        }
+        
+        echo '</div>';
+        
+        return ob_get_clean();
+    }
+    
+    /**
+     * Calculate the current status for a specific store
+     */
+    private function calculate_store_status($product_id, $store, $visibility, $enabled) {
+        $current_utc_time = current_time('timestamp', true);
+        
+        switch ($visibility) {
+            case 'always':
+                return '<span style="color: green;">✅ VISIBLE</span>';
+                
+            case 'disabled':
+                return '<span style="color: red;">❌ HIDDEN</span>';
+                
+            case 'scheduled':
+                $start_key = "_club420_{$store}_schedule_start";
+                $end_key = "_club420_{$store}_schedule_end";
+                $start_time = get_post_meta($product_id, $start_key, true);
+                $end_time = get_post_meta($product_id, $end_key, true);
+                
+                if (!$start_time || !$end_time) {
+                    return '<span style="color: orange;">⚠️ NO TIMES SET</span>';
+                }
+                
+                if ($current_utc_time >= $start_time && $current_utc_time <= $end_time) {
+                    return '<span style="color: green;">✅ SCHEDULED LIVE</span>';
+                } else if ($current_utc_time < $start_time) {
+                    $hours_until = round(($start_time - $current_utc_time) / 3600, 1);
+                    return '<span style="color: blue;">⏳ STARTS IN ' . $hours_until . 'h</span>';
+                } else {
+                    return '<span style="color: gray;">⏰ SCHEDULE ENDED</span>';
+                }
+                
+            default:
+                // Check manual toggle as fallback
+                if ($enabled === 'yes') {
+                    return '<span style="color: green;">✅ MANUAL ENABLED</span>';
+                } else {
+                    return '<span style="color: red;">❌ MANUAL DISABLED</span>';
+                }
+        }
+    }
+    
+    /**
+     * Get all products that have schedule-related meta data
+     */
+    private function get_products_with_schedules() {
+        global $wpdb;
+        
+        // Find products that have visibility settings (scheduled products)
+        $product_ids = $wpdb->get_col("
+            SELECT DISTINCT p.ID 
+            FROM {$wpdb->posts} p 
+            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
+            WHERE p.post_type = 'product' 
+            AND p.post_status = 'publish'
+            AND (
+                pm.meta_key = '_club420_davis_visibility' OR 
+                pm.meta_key = '_club420_dixon_visibility'
+            )
+        ");
+        
+        return array_map('intval', $product_ids);
+    }
+    
+    /**
+     * Show system status in admin (only on products page)
+     */
+    public function show_system_status() {
+        global $pagenow, $typenow;
+        if ($pagenow !== 'edit.php' || $typenow !== 'product' || !current_user_can('manage_options')) {
+            return;
+        }
+        
+        echo '<div class="notice notice-success"><p><strong>Club420 Real-Time Scheduler:</strong> ✅ Active! Products show/hide instantly based on schedules. Use <code>[club420_scheduler_dashboard]</code> shortcode to monitor status.</p></div>';
+    }
+}
 
-**Status**: ✅ **PRODUCTION READY** - Smart bot detection + Safari fixes implemented  
-**Location**: Divi → Theme Options → Integration → Body  
-**Current Version**: Smart age gate with bot detection + Safari button fixes + cannabis compliance  
-**Performance**: Grade A+ (85%) for testing bots, full compliance for real users
+// Initialize the dashboard
+new Club420ProductSchedulerDashboard();
+```
+
+## COMPLETE BODY JAVASCRIPT (Divi → Theme Options → Integration → Body)
 
 ```html
 <!-- COMPLETE Club420 System - SMART AGE GATE WITH BOT DETECTION + SAFARI FIXES -->
@@ -1810,6 +2563,87 @@ add_action('wp_footer', 'club420_native_carousel_scripts', 25);
     });
   });
 
+  // MULTIPLE DROPDOWN SUPPORT - HANDLES ALL DROPDOWNS WITH STYLED-STORE-SELECT* IDS
+  window.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      console.log('Club420: Initializing multiple dropdown support...');
+      
+      // Find all dropdowns that start with 'styled-store-select'
+      const dropdowns = document.querySelectorAll('select[id^="styled-store-select"]');
+      
+      if (dropdowns.length === 0) {
+        console.log('Club420: No styled store select dropdowns found');
+        return;
+      }
+      
+      console.log(`Club420: Found ${dropdowns.length} store dropdown(s)`);
+      
+      dropdowns.forEach((dropdown, index) => {
+        if (!dropdown) return;
+        
+        console.log(`Club420: Setting up dropdown ${index + 1} with ID: ${dropdown.id}`);
+        
+        // Set current selection based on localStorage
+        const currentStore = localStorage.getItem('last-store-selected');
+        if (currentStore === davisID) {
+          dropdown.value = 'davis';
+        } else if (currentStore === dixonID) {
+          dropdown.value = 'dixon';
+        }
+        
+        // Add hover effect
+        dropdown.addEventListener('mouseenter', function() {
+          this.style.borderColor = '#f2ac1d';
+          this.style.boxShadow = '0 0 15px rgba(242, 172, 29, 0.3)';
+        });
+        
+        dropdown.addEventListener('mouseleave', function() {
+          this.style.borderColor = '#fff';
+          this.style.boxShadow = 'none';
+        });
+        
+        dropdown.addEventListener('change', function() {
+          const store = this.value;
+          if (!store) return;
+          
+          console.log('Club420 Multiple Dropdown: Selected', store, 'from dropdown', this.id);
+          
+          // Sync all other dropdowns to match this selection
+          dropdowns.forEach(dd => {
+            if (dd !== this && dd.value !== store) {
+              dd.value = store;
+              console.log(`Club420: Synced dropdown ${dd.id} to ${store}`);
+            }
+          });
+          
+          // Use the smooth reload function from body code
+          if (typeof setStoreSmoothReload === 'function') {
+            setStoreSmoothReload(store);
+          } else {
+            console.log('setStoreSmoothReload not available, using fallback');
+            // Fallback with smooth transition
+            const storeId = store === 'davis' ? davisID : dixonID;
+            localStorage.setItem('last-store-selected', storeId);
+            
+            // Add smooth page exit
+            document.body.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            document.body.style.opacity = '0.8';
+            document.body.style.transform = 'scale(0.98)';
+            
+            setTimeout(() => {
+              const currentUrl = new URL(window.location);
+              currentUrl.searchParams.set('store_filter', store);
+              window.location.href = currentUrl.toString();
+            }, 300);
+          }
+        });
+      });
+      
+      console.log('Club420: Multiple dropdown support initialized successfully');
+      
+    }, 1200); // Slight delay to ensure body code loads first
+  });
+
   window.setStore = setStoreSmoothReload;
 
   // MENU MANAGER (unchanged)
@@ -1921,146 +2755,81 @@ add_action('wp_footer', 'club420_native_carousel_scripts', 25);
     setTimeout(showStoreSectionsSmooth, 300);
   });
 
-  console.log('🍃 Club420: Smart age gate active with Safari fixes - Compliance for users, performance for bots! 🤖👤');
+  console.log('🍃 Club420: Smart age gate active with Safari fixes + Multiple Dropdown Support - Compliance for users, performance for bots! 🤖👤');
 </script>
 ```
 
----
-
-## 🎨 **FRONTEND STORE DROPDOWN (PRODUCTION READY)**
-
-**Location**: Front page Divi Code Module  
-**Status**: ✅ ACTIVE - Professional styled user interface
+## STORE DROPDOWN HTML (Divi Code Module)
 
 ```html
-<div class="club420-store-selector" style="max-width: 300px; margin: 20px auto; font-family: 'Inter', sans-serif;">
-  <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; border: 1px solid #e5e5e5;">
-    <div style="background: linear-gradient(135deg, #f2ac1d 0%, #e09b0a 100%); padding: 16px 20px; color: #fff; font-weight: 600; font-size: 16px; text-align: center;">
-      <span style="display: inline-block; margin-right: 8px;">📍</span>
-      Select Your Store Location
-    </div>
-    
-    <div style="padding: 20px;">
-      <select id="store-location-dropdown" 
-              onchange="window.setStore && window.setStore(this.value)" 
-              style="width: 100%; padding: 12px 16px; border: 2px solid #e5e5e5; border-radius: 8px; font-size: 16px; background: #fff; cursor: pointer; transition: all 0.3s ease; outline: none;"
-              onfocus="this.style.borderColor='#f2ac1d'; this.style.boxShadow='0 0 0 3px rgba(242, 172, 29, 0.1)'"
-              onblur="this.style.borderColor='#e5e5e5'; this.style.boxShadow='none'">
-        <option value="" disabled selected style="color: #999;">Choose your preferred location...</option>
-        <option value="davis">🌿 Davis Store - F Street</option>
-        <option value="dixon">🏪 Dixon Store - Highway 80</option>
-      </select>
-      
-      <div style="margin-top: 12px; font-size: 14px; color: #666; text-align: center; line-height: 1.4;">
-        Your selection will customize product availability and pricing for your location.
-      </div>
-    </div>
-  </div>
+<div style="max-width: 350px;">
+ <select id="styled-store-select-page" style="
+   width: 100%;
+   padding: 1.25rem 1.5rem;
+   font-size: 1.125rem;
+   font-weight: 500;
+   background: #000;
+   color: #fff;
+   border: 2px solid #fff;
+   border-radius: 20px;
+   outline: none;
+   cursor: pointer;
+   appearance: none;
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 4 5\"><path fill=\"%23ffffff\" d=\"M2 0L0 2h4zm0 5L0 3h4z\"/></svg>');
+   background-repeat: no-repeat;
+   background-position: right 1rem center;
+   background-size: 12px;
+   transition: all 0.3s ease;
+ ">
+   <option value="" style="color: #333;">Choose Store Location</option>
+   <option value="davis" style="color: #333;">Davis Store</option>
+   <option value="dixon" style="color: #333;">Dixon Store</option>
+ </select>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Set dropdown based on current store
-  const storeDropdown = document.getElementById('store-location-dropdown');
-  if (storeDropdown) {
-    const currentStore = localStorage.getItem('last-store-selected');
-    const davisID = '79043044-f024-4b70-8714-4fcad409f978';
-    const dixonID = '7029749f-9c6d-419e-b037-5c1b566f3df9';
-    
-    if (currentStore === davisID) {
-      storeDropdown.value = 'davis';
-    } else if (currentStore === dixonID) {
-      storeDropdown.value = 'dixon';
-    }
-    
-    // Also check URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const storeFilter = urlParams.get('store_filter');
-    if (storeFilter) {
-      storeDropdown.value = storeFilter;
-    }
-  }
-});
-</script>
 ```
 
----
+## CAROUSEL SHORTCODE USAGE (In Divi Sections)
 
-## 🚀 **CAROUSEL SHORTCODE USAGE (PRODUCTION READY)**
-
-**In your existing `.davis-content` sections:**
-```html
+### Davis Content Sections:
+```
 [club420_deals_carousel store="davis"]
 ```
 
-**In your existing `.dixon-content` sections:**
-```html
+### Dixon Content Sections:
+```
 [club420_deals_carousel store="dixon"]
 ```
 
----
+## SYSTEM ARCHITECTURE SUMMARY
 
-## 📊 **CURRENT PERFORMANCE STATUS**
+### **Critical Configuration:**
+- **Store IDs**: Davis=`79043044-f024-4b70-8714-4fcad409f978`, Dixon=`7029749f-9c6d-419e-b037-5c1b566f3df9`
+- **Tymber Integration**: `/menu/f-street/` (Davis), `/menu/highway-80/` (Dixon) 
+- **localStorage Keys**: `tymber-user-has-allowed-age`, `last-store-selected`
+- **CSS Classes**: `.davis-content`/`.dixon-content` (sections), `.davis-menu`/`.dixon-menu` (navigation)
+- **Dropdown Pattern**: `styled-store-select-*` for automatic detection
 
-### **🎯 Performance Metrics - STABLE:**
-- **GTmetrix Grade**: A+ (85% Performance, 97% Structure) ✅ **MAINTAINED**
-- **Total Blocking Time**: 25ms ✅ **EXCELLENT** (target <300ms)
-- **Phase 2A Impact**: No performance degradation with WooCommerce native approach
-- **Bot Performance**: Smart detection continues to bypass for testing ✅ **OPTIMIZED**
-- **Mobile Performance**: Maintained touch interactions ✅ **STABLE**
+### **Text Menu Detection** (Navigation Labels):
+- **FLOWER** → `/categories/flower/`
+- **CARTRIDGES** → `/categories/cartridge/`
+- **EDIBLES** → `/categories/edible/`
+- **PRE-ROLLS** or **PREROLLS** → `/categories/preroll/`
+- **EXTRACTS** or **EXTRACT** → `/categories/extract/`
+- **SHOP ALL** or **ALL** or **SHOP NOW** → `/` (all products)
 
-### **🎨 Visual Status - PHASE 2A COMPLETED:**
-1. **Arrow styling** - ✅ **PERFECT MATCH** to icon slider (ETmodules font)
-2. **YITH integration** - ✅ **WORKING PERFECTLY** with WooCommerce native
-3. **Responsive design** - ✅ **OPTIMIZED** across all devices
-4. **Section spacing** - ✅ **PERFECT** tight spacing
-5. **Future compatibility** - ✅ **GUARANTEED** with WooCommerce standards
+### **Required WordPress Plugins:**
+- **Code Snippets** (for PHP implementation) ✅ **ESSENTIAL**
+- **WooCommerce** (e-commerce functionality) ✅ **REQUIRED**
+- **Divi Theme** (for JavaScript integration) ✅ **REQUIRED**
+- **YITH WooCommerce Badge Management** (for product badges) ✅ **COMPATIBLE**
 
----
-
-## 🛠️ **NEXT STEPS - PHASE 2B ROADMAP**
-
-### **🎯 IMMEDIATE TASKS (Current Chat):**
-1. **Styling refinement** - Fix any remaining visual issues with product layout
-2. **Partial cards prevention** - Ensure perfect card calculations
-3. **Mobile optimization** - Perfect responsive behavior
-
-### **Phase 2B: Product Scheduler System (NEXT PRIORITY)**  
-- **Time-based product visibility**: Products appear/disappear at scheduled times
-- **Store-specific scheduling**: Different timing for Davis vs Dixon
-- **Admin interface**: Date/time picker for each store
-- **Automatic carousel updates**: Scheduled products appear in carousels
-- **Promotional timing**: Happy hour deals, daily specials
-- **WordPress cron integration**: Background processing
-
-### **Phase 2C: Plugin Conversion (FINAL STEP)**
-- **Convert 5 snippets** into proper WordPress plugin
-- **Centralized settings page**
-- **Professional plugin standards**
-- **Version control capability**
+### **WP Engine Hosting Requirements:**
+- **Cache exclusion headers** for real-time scheduling
+- **Proxy pass configuration** for Tymber menu integration
+- **Performance optimizations** maintained throughout
 
 ---
 
-## 🚨 **FINAL STATUS SUMMARY:**
-
-### **✅ PHASE 2A COMPLETED:**
-- **YITH badges working perfectly** with WooCommerce native approach
-- **All carousel core functionality operational**
-- **Arrow navigation** with ETmodules font matching icon slider
-- **Future-proof architecture** using WooCommerce standards
-- **Store filtering** working seamlessly with native shortcodes
-
-### **✅ SYSTEM FULLY OPERATIONAL:**
-- **All core functionality working** (age gate, filtering, buttons, admin)
-- **Grade A+ performance maintained**
-- **Production ready** with Phase 2A completed
-- **WooCommerce native carousels** with full plugin compatibility
-
-**Status**: ✅ **PHASE 2A COMPLETED** - YITH badges working, styling refinement in progress  
-**Current Issues**: Minor styling adjustments needed  
-**Next Steps**: Complete styling refinement → Phase 2B Product Scheduler  
-**Documentation Status**: Complete and updated with Phase 2A completion  
-
-**Last Updated**: December 11, 2024  
-**YITH Integration**: ✅ **WORKING PERFECTLY**  
-**Ready for**: Final styling refinement → Phase 2B implementation
+**TASK: Please help me break this complete working system into individual GitHub files and create INSTALLATION.md. All code above is production-ready and working.**
