@@ -1,6 +1,4 @@
-# COMPLETE CLUB420 SYSTEM - COPY THIS FOR NEW CHAT
-
-**Copy everything below this line into your new chat:**
+# COMPLETE CLUB420 SYSTEM 
 
 ---
 
